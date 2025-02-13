@@ -5,7 +5,6 @@ import androidx.room.RoomDatabase
 import com.example.todoapp.data.*
 import com.example.todoapp.repositories.*
 import com.example.todoapp.data.ToDoDatabase
-import com.example.todoapp.models.room.Note
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -30,7 +29,6 @@ fun readCSVFromResources(context: Context, sourceFile: Int, hasHeader: Boolean):
         .map { line ->
         line.split(",") // Customize this based on your CSV file format
     }
-
     return csvData
 }
 

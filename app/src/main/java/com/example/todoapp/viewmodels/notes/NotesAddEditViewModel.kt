@@ -6,11 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todoapp.models.room.Note
-import com.example.todoapp.models.supabase.SupabaseNote
 import com.example.todoapp.repositories.NoteRepository
-import com.example.todoapp.supabase
-import com.example.todoapp.utils.Common
-import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.launch
 
 class NotesAddEditViewModel(
@@ -42,24 +38,6 @@ class NotesAddEditViewModel(
             noteRepository.add(note)
         } else {
             noteRepository.update(note)
-        }
-    }
-
-    suspend fun saveNoteOnline(){
-        if(noteId == "") {
-            supabase.from("note").insert(note.toSupabaseNote())
-        } else {
-            supabase.from("note").update(
-                {
-                    SupabaseNote::title setTo note.title
-                    SupabaseNote::content setTo note.content
-                    SupabaseNote::updated_at setTo Common().getTimeStamp()
-                }
-            ) {
-                filter {
-                    eq("id", noteId)
-                }
-            }
         }
     }
 }

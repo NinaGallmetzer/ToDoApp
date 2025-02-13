@@ -6,6 +6,7 @@ sealed class Screens(val route: String) {
     object Login: Screens(route = "loginScreen")
 
     object Notes: Screens(route = "notesScreen")
+
     object NotesAddEdit: Screens(route = "notesAddEditScreen/{noteId}") {
         fun createRoute(noteId: String) = "notesAddEditScreen/$noteId"
     }
