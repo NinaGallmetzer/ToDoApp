@@ -1,0 +1,181 @@
+<resources>
+    // General
+    <string name="app_name">ToDoApp</string>
+    <string name="add">Hinzufügen</string>
+    <string name="delete">Löschen</string>
+    <string name="save">Speichern</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="select">Auswählen</string>
+    <string name="search">Suchen</string>
+    <string name="show">Anzeigen</string>
+    <string name="comment">Kommentar</string>
+    <string name="details">Details anzeigen</string>
+    <string name="description">Beschreibung</string>
+    <string name="description_required">Beschreibung ist erforderlich!</string>
+    <string name="latitude">Breitengrad</string>
+    <string name="latitude_required">Breitengrad ist erforderlich!</string>
+    <string name="longitude">Längengrad</string>
+    <string name="longitude_required">Longitude ist erforderlich!</string>
+    <string name="of">von</string>
+    <string name="degree_celsius">\u00B0C</string>
+    <string name="ringing_protocols">Beringungsprotokoll</string>
+
+    // Start Screen
+    <string name="log_in">Log in</string>
+    <string name="sign_up">Sign up</string>
+
+    // Login Screen
+    <string name="email">E-Mail</string>
+    <string name="password">Passwort</string>
+
+    // Home Screen
+    <string name="explore_bird_species">Erkunde Vogelarten</string>
+    <string name="manage_data">Datenverwaltung</string>
+    <string name="import_export_data">Daten importieren/exportieren</string>
+
+    // Import/Export Data
+    <string name="export">Sicherung erstellen</string>
+    <string name="imports">Wiederherstellen aus Sicherung</string>
+    <string name="export_as_csv">Daten als CSV exportieren</string>
+    <string name="csvSuccessful">Erfolgreich!\nSchaue im Download Ordner nach!</string>
+    <string name="csvFailed">Ups! Etwas ist schief gelaufen!</string>
+
+    // Entities
+    <string name="note">Standort</string>
+    <string name="notes">Standorte</string>
+    <string name="ringer">BeringerIn</string>
+    <string name="ringers">BeringerInnen</string>
+    <string name="item">Itemz</string>
+    <string name="items">Itemze</string>
+    <string name="ringing_session">Ringing Session</string>
+    <string name="ringing_sessions">Ringing Sessions</string>
+    <string name="item_protocol">Itemz Protokoll</string>
+    <string name="item_protocols">Itemz Protokolle</string>
+    <string name="ringer_protocol">BeringerInnen Protokoll</string>
+    <string name="ringer_protocols">BeringerInnen Protokolle</string>
+    <string name="bird_record">Eintrag</string>
+    <string name="bird_records">Einträge</string>
+
+    // Notes
+    <string name="manage_notes">Standorte verwalten</string>
+    <string name="add_note">Standort hinzufügen</string>
+    <string name="edit_note">Standort bearbeiten</string>
+    <string name="delete_note">Standort löschen</string>
+    <string name="title">Titel</string>
+    <string name="title_required">Titel ist erforderlich!</string>
+    <string name="country_list">Verwendete Artenliste</string>
+
+    // Items
+    <string name="manage_items">Itemze verwalten</string>
+    <string name="add_item">Itemz hinzufügen</string>
+    <string name="edit_item">Itemz bearbeiten</string>
+    <string name="delete_item">Itemz löschen</string>
+    <string name="item_number">Itemznummer</string>
+    <string name="item_number_required">Itemznummer ist erforderlich!</string>
+    <string name="item_length">Länge [m]</string>
+    <string name="item_length_required">Länge ist erforderlich!</string>
+    <string name="no_of_shelves">Anzahl der Regale</string>
+    <string name="no_of_shelves_required">Anzahl der Einlegeböden ist erforderlich!</string>
+    <string name="mesh_size">Maschenweite [mm]</string>
+
+    // Ringing Session
+    <string name="start_ringing">Beringen Starten</string>
+    <string name="manage_ringing_sessions">Beringungssessions verwalten</string>
+    <string name="add_ringing_session">Beringungs-Session hinzufügen</string>
+    <string name="edit_ringing_session">Beringungs-Session bearbeiten</string>
+    <string name="delete_ringing_session">Beringungs-Session löschen</string>
+    <string name="record_date">Datum</string>
+    <string name="record_date_required">Datum ist erforderlich!</string>
+    <string name="start_time">Startzeit</string>
+    <string name="start_time_required">Startzeit ist erforderlich!</string>
+    <string name="end_time">Endzeit</string>
+    <string name="end_time_required">Endzeit ist erforderlich!</string>
+    <string name="start_temperature">Start Temperatur [\u00B0C]</string>
+    <string name="start_temperature_required">Start Temperatur ist erforderlich!</string>
+    <string name="end_temperature">End Temperatur [\u00B0C]</string>
+    <string name="weather">Wetter</string>
+    <string name="wind">Wind [Bft]</string>
+    <string name="station_manager">BeringungsleiterIn</string>
+
+    // Ringers
+    <string name="add_ringer">BeringerIn hinzufügen</string>
+    <string name="edit_ringer">BeringerIn bearbeiten</string>
+    <string name="delete_ringer">BeringerIn löschen</string>
+    <string name="firstname">Vorname</string>
+    <string name="firstname_required">Vorname ist erforderlich!</string>
+    <string name="lastname">Nachname</string>
+    <string name="lastname_required">Nachname ist erforderlich!</string>
+    <string name="experience">Erfahrung</string>
+
+    // Species
+    <string name="bird_species">Art</string>
+    <string name="family">Familie</string>
+    <string name="german_name">Deutscher Name</string>
+    <string name="ring_size">Ringgröße</string>
+
+    // Other
+    <string name="add_records">Datensätze hinzufügen</string>
+    <string name="button_text">Button Text</string>
+
+    // ENUMS
+    <string name="sex_zero">unbekannt</string>
+    <string name="sex_one">Männchen</string>
+    <string name="sex_two">Weibchen</string>
+
+    // BirdRecords
+    <string name="add_bird_record">Eintrag hinzufügen</string>
+    <string name="edit_bird_record">Eintrag bearbeiten</string>
+    <string name="delete_bird_record">Eintrag löschen</string>
+    <string name="time">Uhrzeit</string>
+    <string name="recapture">Wiederfang</string>
+    <string name="shelf_number">Itemztasche</string>
+    <string name="next">Nächster</string>
+    <string name="age">Alter</string>
+    <string name="sex">Geschlecht</string>
+    <string name="fat">Fett</string>
+    <string name="muscle">Muskel</string>
+    <string name="tarsus">Tarsus</string>
+    <string name="wing_length">Flügellänge</string>
+    <string name="feather_length">Federlänge (P8)</string>
+    <string name="weight">Gewicht</string>
+    <string name="ring_number">Ringnummer</string>
+    <string name="ring_label">Ringaufschrift</string>
+    <string name="end">Ende</string>
+    <string name="top_left_color">Farbe Oben Links</string>
+    <string name="top_right_color">Farbe Oben Rechts</string>
+    <string name="bottom_left_color">Farbe Unten Links</string>
+    <string name="bottom_right_color">Farbe Unten rechts</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="both">Beide</string>
+
+    // Confirm Delete Dialog
+    <string name="delete_all_ringers_title">BeringerInnen löschen</string>
+    <string name="delete_all_ringers_message">Wirklich ALLE BeringerInnen löschen?</string>
+    <string name="delete_this_ringer_message">Diese(n) BeringerIn wirklich löschen?</string>
+    <string name="delete_all_notes_title">Standorte löschen</string>
+    <string name="delete_all_notes_message">Wirklich ALLE Stanorte löschen?</string>
+    <string name="delete_this_note_message">Diesen Standort wirklich löschen?</string>
+    <string name="delete_all_items_title">Itemze löschen</string>
+    <string name="delete_all_items_message">Wirklich ALLE Itemze löschen?</string>
+    <string name="delete_this_item_message">Dieses Itemz wirklich löschen?</string>
+    <string name="delete_all_ringing_sessions_title">Beringungs-Sessions löschen</string>
+    <string name="delete_all_ringing_sessions_message">Wirklich ALLE Beringungs-Sessions löschen?</string>
+    <string name="delete_this_ringing_session_message">Diese Beringungs-Session wirklich löschen?</string>
+    <string name="delete_this_item_protocol_message">Dieses Itemz wirklich aus dem Protokoll löschen?</string>
+    <string name="delete_this_ringer_protocol_message">Diese/n BeringerIn wirklich aus dem Protokoll löschen?</string>
+    <string name="delete_this_bird_record_message">Diesen Eintrag wirklich löschen?</string>
+
+    // Toast messages
+    <string name="no_species_list_found">Keine Artenliste für diesen Standort gefunden</string>
+    <string name="bird_record_saved">Eintrag gespeichert</string>
+    <string name="select_item">Itemz nicht ausgewählt</string>
+    <string name="bird_record_not_saved">Änderungen nicht gespeichert</string>
+    <string name="dont_save">Nicht speichern</string>
+    <string name="save_changes_title">Änderungen speichern</string>
+    <string name="save_changes_message">Möchten Sie die Änderungen, die Sie an diesem Datensatz vorgenommen haben, speichern?</string>
+    <string name="moult_intensity">Intensity</string>
+    <string name="moult_progress">Progress</string>
+    <string name="moult_primaries">Primaries</string>
+
+</resources>
