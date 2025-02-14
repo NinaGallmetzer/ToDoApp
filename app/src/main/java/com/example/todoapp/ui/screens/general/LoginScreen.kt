@@ -63,7 +63,7 @@ fun LoginScreen(
             .fillMaxSize()
     ) {
         Image(
-            painter = painterResource(R.drawable.mobira_background),
+            painter = painterResource(R.drawable.background_portraint),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()

@@ -1,12 +1,12 @@
-package com.example.todoapp.utils
+package com.example.todoapp.data.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.room.TypeConverter
-import com.example.todoapp.models.room.Note
-import com.example.todoapp.viewmodels.InjectorUtils
-import com.example.todoapp.viewmodels.notes.NotesAddEditViewModel
+import com.example.todoapp.data.models.room.Note
+import com.example.todoapp.ui.viewmodels.InjectorUtils
+import com.example.todoapp.ui.viewmodels.notes.NotesAddEditViewModel
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*

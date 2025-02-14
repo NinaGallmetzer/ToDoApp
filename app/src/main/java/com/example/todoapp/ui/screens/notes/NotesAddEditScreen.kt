@@ -38,8 +38,8 @@ import com.example.todoapp.ui.navigation.Screens
 import com.example.todoapp.ui.screens.general.CommonAppBar
 import com.example.todoapp.ui.screens.general.CustomOutlinedTextField
 import com.example.todoapp.ui.theme.Shapes
-import com.example.todoapp.viewmodels.InjectorUtils
-import com.example.todoapp.viewmodels.notes.NotesAddEditViewModel
+import com.example.todoapp.ui.viewmodels.InjectorUtils
+import com.example.todoapp.ui.viewmodels.notes.NotesAddEditViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -52,7 +52,7 @@ fun NotesAddEditScreen(
     var saveButtonState by remember { mutableStateOf(false) }
 
     Box {
-        val image = R.drawable.mobira_background
+        val image = R.drawable.background_portraint
         Image(
             painter = painterResource(image),
             contentDescription = null,

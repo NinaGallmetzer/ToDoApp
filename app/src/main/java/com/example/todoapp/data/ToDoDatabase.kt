@@ -5,8 +5,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.todoapp.models.room.Note
-import com.example.todoapp.utils.CustomConverters
+import com.example.todoapp.data.daos.NoteDao
+import com.example.todoapp.data.models.room.Note
+import com.example.todoapp.data.utils.CustomConverters
 import com.example.todoapp.workers.SeedDatabaseWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -1,12 +1,12 @@
-package com.example.todoapp.viewmodels.notes
+package com.example.todoapp.ui.viewmodels.notes
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.todoapp.models.room.Note
-import com.example.todoapp.repositories.NoteRepository
+import com.example.todoapp.data.models.room.Note
+import com.example.todoapp.data.repositories.NoteRepository
 import kotlinx.coroutines.launch
 
 class NotesAddEditViewModel(

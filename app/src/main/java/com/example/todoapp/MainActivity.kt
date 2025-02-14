@@ -1,6 +1,8 @@
 package com.example.todoapp
 
+import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +11,8 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.todoapp.data.utils.ExportDbUtil
+import com.example.todoapp.data.utils.ExporterListener
 import com.example.todoapp.ui.navigation.SetupNavGraph
 import com.example.todoapp.ui.theme.ToDoAppTheme
 import io.github.jan.supabase.auth.Auth
@@ -31,9 +35,16 @@ val supabase = createSupabaseClient(
     install(Realtime)
 }
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), ExporterListener {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val exportDbUtil = ExportDbUtil(
+            this,
+            "todo_db",
+            "/Download/",
+            this)
+
         var navController: NavHostController
         setContent {
             ToDoAppTheme {
@@ -43,9 +54,24 @@ class MainActivity : ComponentActivity() {
                 ) {
                     supabase.auth.currentSessionOrNull()
                     navController = rememberNavController()
-                    SetupNavGraph(navController)
+                    SetupNavGraph(navController, exportDbUtil)
                 }
             }
         }
     }
+
+    override fun fail(message: String, exception: String) {
+        println("Export failed. Message: $message, Exception: $exception")
+        mToast(this, getString(R.string.csvFailed))
+    }
+
+    override fun success(s: String) {
+        println("DB Successfully exported as csv")
+        mToast(this, getString(R.string.csvSuccessful))
+    }
+
+    private fun mToast(context: Context, txt : String){
+        Toast.makeText(context, txt , Toast.LENGTH_SHORT).show()
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.example.todoapp.models.enums
+package com.example.todoapp.data.models.enums
 
 enum class SyncType {
     synced,

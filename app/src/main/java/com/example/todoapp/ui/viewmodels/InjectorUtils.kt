@@ -1,13 +1,14 @@
-package com.example.todoapp.viewmodels
+package com.example.todoapp.ui.viewmodels
 
 import android.content.Context
 import com.example.todoapp.data.ToDoDatabase
-import com.example.todoapp.repositories.*
-import com.example.todoapp.viewmodels.notes.NotesAddEditViewModelFactory
-import com.example.todoapp.viewmodels.notes.NotesViewModelFactory
+import com.example.todoapp.data.repositories.NoteRepository
+import com.example.todoapp.data.utils.ExportDbUtil
+import com.example.todoapp.ui.viewmodels.notes.NotesAddEditViewModelFactory
+import com.example.todoapp.ui.viewmodels.notes.NotesViewModelFactory
 
 object InjectorUtils {
-    private fun getNoteRepository(context: Context): NoteRepository{
+    private fun getNoteRepository(context: Context): NoteRepository {
         return NoteRepository.getInstance(
             ToDoDatabase.getDatabase(context.applicationContext).noteDao(), context.applicationContext)
     }
@@ -19,4 +20,9 @@ object InjectorUtils {
         val repository = getNoteRepository(context)
         return NotesAddEditViewModelFactory(repository, noteId)
     }
+
+    fun provideDataScreenViewModelFactory(exportDbUtil: ExportDbUtil): DataScreenViewModelFactory {
+        return DataScreenViewModelFactory(exportDbUtil)
+    }
+
 }

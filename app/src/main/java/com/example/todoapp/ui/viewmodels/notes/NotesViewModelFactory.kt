@@ -1,8 +1,8 @@
-package com.example.todoapp.viewmodels.notes
+package com.example.todoapp.ui.viewmodels.notes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.todoapp.repositories.NoteRepository
+import com.example.todoapp.data.repositories.NoteRepository
 
 @Suppress("UNCHECKED_CAST")
 class NotesViewModelFactory(private val repository: NoteRepository): ViewModelProvider.Factory {

@@ -89,4 +89,11 @@ dependencies {
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.utils)
 
+    // Room DB Backup
+//  implementation("de.raphaelebner:roomdatabasebackup:1.0.0-beta12")
+//  implementation("androidx.appcompat:appcompat:1.6.1")
+//  implementation("androidx.fragment:fragment:1.6.0")
+//  implementation("com.github.prabhat1707:DbExporterHelper:v1.0")
+    implementation("com.opencsv:opencsv:5.8")
+
 }

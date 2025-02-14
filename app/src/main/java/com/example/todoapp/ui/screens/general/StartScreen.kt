@@ -33,9 +33,9 @@ fun StartScreen(
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
     val image = if (isPortrait) {
-        R.drawable.mobira_background
+        R.drawable.background_portraint
     } else {
-        R.drawable.mobira_homescreen_landscape
+        R.drawable.background_landscape
     }
 
     Box(

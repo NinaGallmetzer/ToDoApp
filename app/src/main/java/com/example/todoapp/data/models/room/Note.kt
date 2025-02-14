@@ -1,11 +1,11 @@
-package com.example.todoapp.models.room
+package com.example.todoapp.data.models.room
 
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.example.todoapp.models.enums.SyncType
-import com.example.todoapp.models.supabase.SupabaseNote
-import com.example.todoapp.utils.Common
+import com.example.todoapp.data.models.enums.SyncType
+import com.example.todoapp.data.models.supabase.SupabaseNote
+import com.example.todoapp.data.utils.Common
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
@@ -18,8 +18,7 @@ data class Note (
     val noteId: String = UUID.randomUUID().toString(),
     var title: String = "",
     var content: String? = null,
-    var createdAt: String = Common().getTimeStamp(),
-    var updatedAt: String = Common().getTimeStamp(),
+    var createdAt: String = Common().getSupabaseTimeStamp(),
     var syncedAt: String? = null,
     var syncType: SyncType = SyncType.synced,
 ) {
@@ -28,7 +27,6 @@ data class Note (
         title = title,
         content = content,
         created_at = createdAt,
-        updated_at = updatedAt,
         synced_at = syncedAt
     )
 }
