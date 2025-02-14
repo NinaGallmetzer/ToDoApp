@@ -1,6 +1,6 @@
-package com.example.todoapp.models.supabase
+package com.example.todoapp.data.models.supabase
 
-import com.example.todoapp.models.room.Note
+import com.example.todoapp.data.models.room.Note
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -9,7 +9,6 @@ data class SupabaseNote(
     val title: String,
     val content: String?,
     val created_at: String,
-    val updated_at: String,
     val synced_at: String?
 ) {
     fun toRoomNote(): Note = Note(
@@ -17,7 +16,6 @@ data class SupabaseNote(
         title = title,
         content = content,
         createdAt = created_at,
-        updatedAt = updated_at,
         syncedAt = synced_at
     )
 }

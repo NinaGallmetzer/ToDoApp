@@ -30,7 +30,6 @@ import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.runtime.Composable
@@ -53,18 +52,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import com.example.todoapp.R
-import com.example.todoapp.models.room.Note
+import com.example.todoapp.data.models.room.Note
 import com.example.todoapp.supabase
 import com.example.todoapp.ui.navigation.Screens
 import com.example.todoapp.ui.screens.general.CommonAddFAB
 import com.example.todoapp.ui.screens.general.showDialog
 import com.example.todoapp.ui.theme.Shapes
-import com.example.todoapp.viewmodels.InjectorUtils
-import com.example.todoapp.viewmodels.notes.NotesViewModel
-import com.example.todoapp.workers.SyncWorker
+import com.example.todoapp.ui.viewmodels.InjectorUtils
+import com.example.todoapp.ui.viewmodels.notes.NotesViewModel
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.launch
 
@@ -73,7 +69,7 @@ fun NotesScreen(
     navController: NavController
 ) {
     Box {
-        val image = R.drawable.mobira_background
+        val image = R.drawable.background_portraint
 
         Image(
             painter = painterResource(image),

@@ -1,8 +1,8 @@
-package com.example.todoapp.data
+package com.example.todoapp.data.daos
 
 import androidx.room.*
-import com.example.todoapp.models.enums.SyncType
-import com.example.todoapp.models.room.Note
+import com.example.todoapp.data.models.enums.SyncType
+import com.example.todoapp.data.models.room.Note
 import kotlinx.coroutines.flow.Flow
 
 @Dao

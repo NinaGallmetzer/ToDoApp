@@ -1,4 +1,4 @@
-package com.example.todoapp.utils
+package com.example.todoapp.data.utils
 
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter

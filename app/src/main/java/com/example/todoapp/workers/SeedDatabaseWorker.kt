@@ -2,9 +2,9 @@ package com.example.todoapp.workers
 
 import android.content.Context
 import androidx.room.RoomDatabase
-import com.example.todoapp.data.*
-import com.example.todoapp.repositories.*
 import com.example.todoapp.data.ToDoDatabase
+import com.example.todoapp.data.daos.NoteDao
+import com.example.todoapp.data.repositories.NoteRepository
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -15,7 +15,6 @@ class SeedDatabaseWorker : RoomDatabase.Callback() {
     suspend fun seedDatabase(database: ToDoDatabase, context: Context) {
         noteDao = database.noteDao()
         noteRepository = NoteRepository(noteDao, context)
-
         noteRepository.updateRoom(context)
     }
 }

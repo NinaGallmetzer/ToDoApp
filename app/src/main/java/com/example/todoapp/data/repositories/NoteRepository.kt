@@ -1,14 +1,14 @@
-package com.example.todoapp.repositories
+package com.example.todoapp.data.repositories
 
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import com.example.todoapp.data.NoteDao
-import com.example.todoapp.models.enums.SyncType
-import com.example.todoapp.models.room.Note
-import com.example.todoapp.models.supabase.SupabaseNote
+import com.example.todoapp.data.daos.NoteDao
+import com.example.todoapp.data.models.enums.SyncType
+import com.example.todoapp.data.models.room.Note
+import com.example.todoapp.data.models.supabase.SupabaseNote
 import com.example.todoapp.supabase
-import com.example.todoapp.utils.Common
+import com.example.todoapp.data.utils.Common
 import com.example.todoapp.workers.NetworkChecker
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.Flow
@@ -35,7 +35,6 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
     }
 
     suspend fun add(note: Note) {
-        note.updatedAt = Common().getTimeStamp()
         note.syncType = SyncType.add
         noteDao.add(note)
         if (networkChecker.isConnected()) {
@@ -47,7 +46,6 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
     }
 
     suspend fun update(note: Note) {
-        note.updatedAt = Common().getTimeStamp()
         note.syncType = SyncType.update
         noteDao.update(note)
         if (networkChecker.isConnected()) {
@@ -58,7 +56,6 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
                     set("title", note.title)
                     set("content", note.content)
                     set("created_at", note.createdAt)
-                    set("updated_at", note.updatedAt)
                     set("synced_at", note.syncedAt)
                 }
             ) {

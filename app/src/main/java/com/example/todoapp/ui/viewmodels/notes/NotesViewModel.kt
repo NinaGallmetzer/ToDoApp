@@ -1,11 +1,11 @@
-package com.example.todoapp.viewmodels.notes
+package com.example.todoapp.ui.viewmodels.notes
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.todoapp.models.enums.SyncType
-import com.example.todoapp.models.room.Note
-import com.example.todoapp.repositories.NoteRepository
+import com.example.todoapp.data.models.enums.SyncType
+import com.example.todoapp.data.models.room.Note
+import com.example.todoapp.data.repositories.NoteRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
