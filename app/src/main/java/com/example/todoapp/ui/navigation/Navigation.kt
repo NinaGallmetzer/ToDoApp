@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.todoapp.data.utils.ExportDbUtil
+import com.example.todoapp.data.utils.ExportDataUtil
 import com.example.todoapp.ui.screens.general.LoginScreen
 import com.example.todoapp.ui.screens.general.StartScreen
 import com.example.todoapp.ui.screens.general.DataScreen
@@ -14,7 +14,7 @@ import com.example.todoapp.ui.screens.notes.NotesScreen
 @Composable
 fun SetupNavGraph(
     navController: NavHostController,
-    exportDbUtil: ExportDbUtil
+    exportDataUtil: ExportDataUtil
 ) {
     NavHost(navController = navController, startDestination = Screens.Start.route) {
         composable(route = Screens.Start.route) {
@@ -34,7 +34,7 @@ fun SetupNavGraph(
         }
 
         composable(route = Screens.Data.route) {
-            DataScreen(navController = navController, exportDbUtil)
+            DataScreen(navController = navController, exportDataUtil)
         }
 
     }

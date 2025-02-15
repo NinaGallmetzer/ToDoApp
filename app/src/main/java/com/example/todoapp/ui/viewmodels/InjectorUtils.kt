@@ -3,7 +3,7 @@ package com.example.todoapp.ui.viewmodels
 import android.content.Context
 import com.example.todoapp.data.ToDoDatabase
 import com.example.todoapp.data.repositories.NoteRepository
-import com.example.todoapp.data.utils.ExportDbUtil
+import com.example.todoapp.data.utils.ExportDataUtil
 import com.example.todoapp.ui.viewmodels.notes.NotesAddEditViewModelFactory
 import com.example.todoapp.ui.viewmodels.notes.NotesViewModelFactory
 
@@ -21,8 +21,8 @@ object InjectorUtils {
         return NotesAddEditViewModelFactory(repository, noteId)
     }
 
-    fun provideDataScreenViewModelFactory(exportDbUtil: ExportDbUtil): DataScreenViewModelFactory {
-        return DataScreenViewModelFactory(exportDbUtil)
+    fun provideDataScreenViewModelFactory(exportDataUtil: ExportDataUtil): DataScreenViewModelFactory {
+        return DataScreenViewModelFactory(exportDataUtil)
     }
 
 }

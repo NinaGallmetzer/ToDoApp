@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId = "com.example.todoapp"
         minSdk = 29
-        targetSdk = 34
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -45,23 +45,6 @@ dependencies {
     // Android Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    // Jetpack Compose
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    // Navigation
-    implementation(libs.androidx.navigation.runtime.ktx)
-    implementation(libs.androidx.navigation.compose)
-    // Room
-    implementation(libs.androidx.room.common)
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
-    // Styling
-    implementation (libs.androidx.material)
-    implementation (libs.androidx.material.icons.extended)
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -70,15 +53,29 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    // Styling
+    implementation (libs.androidx.material)
+    implementation (libs.androidx.material.icons.extended)
 
-    // GSON
-    // implementation (libs.gson)
+    // Jetpack Compose
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
 
-    // Workers
-    implementation(libs.androidx.work.runtime.ktx)
+    // Navigation
+    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.navigation.compose)
+
+    // Room
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
     // Supabase
     implementation(platform(libs.supabase.bom))
@@ -89,11 +86,7 @@ dependencies {
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.utils)
 
-    // Room DB Backup
-//  implementation("de.raphaelebner:roomdatabasebackup:1.0.0-beta12")
-//  implementation("androidx.appcompat:appcompat:1.6.1")
-//  implementation("androidx.fragment:fragment:1.6.0")
-//  implementation("com.github.prabhat1707:DbExporterHelper:v1.0")
-    implementation("com.opencsv:opencsv:5.8")
+    // Workers
+    implementation(libs.androidx.work.runtime.ktx)
 
 }

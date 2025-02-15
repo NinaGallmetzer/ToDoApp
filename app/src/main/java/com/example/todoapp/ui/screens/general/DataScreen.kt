@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.todoapp.R
-import com.example.todoapp.data.utils.ExportDbUtil
+import com.example.todoapp.data.utils.ExportDataUtil
 import com.example.todoapp.ui.viewmodels.DataScreenViewModel
 import com.example.todoapp.ui.viewmodels.InjectorUtils
 
@@ -27,11 +27,11 @@ import com.example.todoapp.ui.viewmodels.InjectorUtils
 @Composable
 fun DataScreen(
     navController: NavController,
-    exportDbUtil: ExportDbUtil
+    exportDataUtil: ExportDataUtil
 ) {
     val title = stringResource(R.string.import_export_data)
     val image = R.drawable.background_portraint
-    val dataScreenViewModel: DataScreenViewModel = viewModel(factory = InjectorUtils.provideDataScreenViewModelFactory(exportDbUtil = exportDbUtil))
+    val dataScreenViewModel: DataScreenViewModel = viewModel(factory = InjectorUtils.provideDataScreenViewModelFactory(exportDataUtil = exportDataUtil))
 
     Box(
         modifier = Modifier

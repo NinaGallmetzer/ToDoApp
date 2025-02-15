@@ -11,7 +11,9 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.todoapp.data.utils.ExportDbUtil
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
+import com.example.todoapp.data.utils.ExportDataUtil
 import com.example.todoapp.data.utils.ExporterListener
 import com.example.todoapp.ui.navigation.SetupNavGraph
 import com.example.todoapp.ui.theme.ToDoAppTheme
@@ -21,6 +23,7 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.realtime.Realtime
+import java.util.concurrent.TimeUnit
 
 val supabase = createSupabaseClient(
     supabaseUrl = "https://qrydvphzggjxzvqnnsaf.supabase.co",
@@ -39,11 +42,11 @@ class MainActivity : ComponentActivity(), ExporterListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val exportDbUtil = ExportDbUtil(
+        val exportDataUtil = ExportDataUtil(
             this,
             "todo_db",
-            "/Download/",
-            this)
+            this
+        )
 
         var navController: NavHostController
         setContent {
@@ -54,24 +57,37 @@ class MainActivity : ComponentActivity(), ExporterListener {
                 ) {
                     supabase.auth.currentSessionOrNull()
                     navController = rememberNavController()
-                    SetupNavGraph(navController, exportDbUtil)
+                    SetupNavGraph(navController, exportDataUtil)
+//                    setupBackgroundSync()
                 }
             }
         }
     }
+
+/*
+    private fun setupBackgroundSync() {
+        // Create the Periodic Work Request
+        val syncWorkRequest = PeriodicWorkRequest.Builder(SyncWorker::class.java, 1, TimeUnit.HOURS)
+            .setInitialDelay(15, TimeUnit.MINUTES)  // Optional: Set an initial delay before first run
+            .build()
+
+        // Enqueue the work request
+        WorkManager.getInstance(applicationContext).enqueue(syncWorkRequest)
+    }
+ */
 
     override fun fail(message: String, exception: String) {
         println("Export failed. Message: $message, Exception: $exception")
         mToast(this, getString(R.string.csvFailed))
     }
 
-    override fun success(s: String) {
+    override fun success(message: String) {
         println("DB Successfully exported as csv")
         mToast(this, getString(R.string.csvSuccessful))
     }
 
-    private fun mToast(context: Context, txt : String){
-        Toast.makeText(context, txt , Toast.LENGTH_SHORT).show()
+    private fun mToast(context: Context, txt: String){
+        Toast.makeText(context, txt, Toast.LENGTH_SHORT).show()
     }
 
 }

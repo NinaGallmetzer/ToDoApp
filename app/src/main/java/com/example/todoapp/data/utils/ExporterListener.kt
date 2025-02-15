@@ -1,7 +1,7 @@
 package com.example.todoapp.data.utils
 
 interface ExporterListener {
-    fun success(s: String)
+    fun success(message: String)
 
-    fun fail(message: String,exception:String)
+    fun fail(message: String, exception:String)
 }
