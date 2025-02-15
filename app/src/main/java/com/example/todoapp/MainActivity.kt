@@ -51,22 +51,8 @@ class MainActivity : ComponentActivity() {
                     supabase.auth.currentSessionOrNull()
                     navController = rememberNavController()
                     SetupNavGraph(navController, exportDataUtil)
-//                    setupBackgroundSync()
                 }
             }
         }
     }
-
-/*
-    private fun setupBackgroundSync() {
-        // Create the Periodic Work Request
-        val syncWorkRequest = PeriodicWorkRequest.Builder(SyncWorker::class.java, 1, TimeUnit.HOURS)
-            .setInitialDelay(15, TimeUnit.MINUTES)  // Optional: Set an initial delay before first run
-            .build()
-
-        // Enqueue the work request
-        WorkManager.getInstance(applicationContext).enqueue(syncWorkRequest)
-    }
- */
-
 }

@@ -5,8 +5,6 @@ import androidx.room.RoomDatabase
 import com.example.todoapp.data.ToDoDatabase
 import com.example.todoapp.data.daos.NoteDao
 import com.example.todoapp.data.repositories.NoteRepository
-import java.io.BufferedReader
-import java.io.InputStreamReader
 
 class SeedDatabaseWorker : RoomDatabase.Callback() {
     private lateinit var noteDao: NoteDao
@@ -18,16 +16,3 @@ class SeedDatabaseWorker : RoomDatabase.Callback() {
         noteRepository.updateRoom(context)
     }
 }
-
-fun readCSVFromResources(context: Context, sourceFile: Int, hasHeader: Boolean): List<List<String>> {
-    val toDrop = if (hasHeader) 1 else 0
-    val reader = BufferedReader(InputStreamReader(context.resources.openRawResource(sourceFile)))
-    val lines: List<String> = reader.readLines()
-    val csvData: List<List<String>> = lines
-        .drop(toDrop)
-        .map { line ->
-        line.split(",") // Customize this based on your CSV file format
-    }
-    return csvData
-}
-

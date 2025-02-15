@@ -1,5 +1,7 @@
 package com.example.todoapp.ui.screens.notes
 
+import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,6 +35,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material.icons.filled.SyncAlt
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -53,6 +56,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.example.todoapp.R
 import com.example.todoapp.data.models.room.Note
 import com.example.todoapp.data.utils.ExportDataUtil
@@ -63,6 +68,7 @@ import com.example.todoapp.ui.screens.general.showDialog
 import com.example.todoapp.ui.theme.Shapes
 import com.example.todoapp.ui.viewmodels.InjectorUtils
 import com.example.todoapp.ui.viewmodels.notes.NotesViewModel
+import com.example.todoapp.workers.SyncWorker
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.launch
 
@@ -169,12 +175,22 @@ fun NotesAppBar(
                     Spacer(modifier = Modifier.width(5.dp))
                     Text("LogOut")
                 }
+                DropdownMenuItem(onClick = {
+                    coroutineScope.launch {
+                        Log.d("Test", "Test001")
+                        startTestWorker(currentContext)
+                        Log.d("Test", "Test005")
+                    }
+                }) {
+                    Icon(imageVector = Icons.Default.SyncAlt, contentDescription = stringResource(R.string.add_note))
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text("TestWorker")
+                }
 
             }
         }
     }
 }
-
 
 @Composable
 fun NotesList(
@@ -338,3 +354,12 @@ fun Details(note: Note = Note()) {
         Text("${stringResource(R.string.comment)}: ${note.content ?: ""}", style = noteDescriptionStyle)
     }
 }
+
+private fun startTestWorker(context: Context) {
+    Log.d("Test", "Test002")
+    val workRequest = OneTimeWorkRequest.Builder(SyncWorker::class.java).build()
+    Log.d("Test", "Test004")
+    WorkManager.getInstance(context.applicationContext).enqueue(workRequest)
+
+}
+

@@ -12,6 +12,7 @@ import com.example.todoapp.data.utils.Common
 import com.example.todoapp.workers.NetworkChecker
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.Flow
+import java.time.Instant
 
 class NoteRepository(private val noteDao: NoteDao, context: Context) {
 
@@ -81,13 +82,23 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
     }
 
     suspend fun updateRoom(context: Context) {
+        Common().getLastFetchTime(context)
+        val lastSync = Instant.parse("2025-02-14T00:00:00Z") // Example timestamp
         if (networkChecker.isConnected()) {
             supabase.from("note")
-                .select()
+                .select {
+                    filter {
+                        or {
+                            gt("synced_at", lastSync)
+                            exact("synced_at", null)
+                        }
+                    }
+                }
                 .decodeList<SupabaseNote>()
                 .forEach { note ->
                     noteDao.add(note.toRoomNote())
                 }
+            Common().saveLastFetchTime(context)
         } else {
             Toast.makeText(context, "Sync not possible while offline", Toast.LENGTH_SHORT).show()
         }
