@@ -8,7 +8,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import java.io.File
 
-class ExportDataUtil(var context: Context, db: String, private var exporterListener: ExporterListener) {
+class ExportDataUtil(var context: Context, db: String, private var exportListener: ExportListener) {
     private var dbName: String = db
     private var dbFile: File = context.getDatabasePath(dbName).absoluteFile
     private var database: SQLiteDatabase = SQLiteDatabase.openOrCreateDatabase(dbFile, null)
@@ -55,9 +55,9 @@ class ExportDataUtil(var context: Context, db: String, private var exporterListe
             contentValues.clear()
             contentValues.put(MediaStore.Downloads.IS_PENDING, 0) // Mark as complete
             resolver.update(uri, contentValues, null, null)
-            exporterListener.success("Success!")
+            exportListener.success("Success!")
         } ?: run {
-            exporterListener.fail("Failed to create file URI", "Error writing file")
+            exportListener.fail("Failed to create file URI", "Error writing file")
         }
     }
 

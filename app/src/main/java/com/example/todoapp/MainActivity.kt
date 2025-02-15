@@ -11,10 +11,8 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
 import com.example.todoapp.data.utils.ExportDataUtil
-import com.example.todoapp.data.utils.ExporterListener
+import com.example.todoapp.data.utils.ExportListener
 import com.example.todoapp.ui.navigation.SetupNavGraph
 import com.example.todoapp.ui.theme.ToDoAppTheme
 import io.github.jan.supabase.auth.Auth
@@ -23,7 +21,6 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.realtime.Realtime
-import java.util.concurrent.TimeUnit
 
 val supabase = createSupabaseClient(
     supabaseUrl = "https://qrydvphzggjxzvqnnsaf.supabase.co",
@@ -38,7 +35,7 @@ val supabase = createSupabaseClient(
     install(Realtime)
 }
 
-class MainActivity : ComponentActivity(), ExporterListener {
+class MainActivity : ComponentActivity(), ExportListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
