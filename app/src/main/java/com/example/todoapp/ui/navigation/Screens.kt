@@ -11,6 +11,4 @@ sealed class Screens(val route: String) {
         fun createRoute(noteId: String) = "notesAddEditScreen/$noteId"
     }
 
-    object Data: Screens(route = "dataScreen")
-
 }

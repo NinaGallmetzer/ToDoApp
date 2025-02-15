@@ -3,7 +3,6 @@ package com.example.todoapp.ui.viewmodels
 import android.content.Context
 import com.example.todoapp.data.ToDoDatabase
 import com.example.todoapp.data.repositories.NoteRepository
-import com.example.todoapp.data.utils.ExportDataUtil
 import com.example.todoapp.ui.viewmodels.notes.NotesAddEditViewModelFactory
 import com.example.todoapp.ui.viewmodels.notes.NotesViewModelFactory
 
@@ -19,10 +18,6 @@ object InjectorUtils {
     fun provideNotesAddEditViewModelFactory(context: Context, noteId: String): NotesAddEditViewModelFactory {
         val repository = getNoteRepository(context)
         return NotesAddEditViewModelFactory(repository, noteId)
-    }
-
-    fun provideDataScreenViewModelFactory(exportDataUtil: ExportDataUtil): DataScreenViewModelFactory {
-        return DataScreenViewModelFactory(exportDataUtil)
     }
 
 }

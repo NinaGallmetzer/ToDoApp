@@ -6,9 +6,11 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 import android.provider.MediaStore
+import android.widget.Toast
+import com.example.todoapp.R
 import java.io.File
 
-class ExportDataUtil(var context: Context, db: String, private var exportListener: ExportListener) {
+class ExportDataUtil(var context: Context, db: String) {
     private var dbName: String = db
     private var dbFile: File = context.getDatabasePath(dbName).absoluteFile
     private var database: SQLiteDatabase = SQLiteDatabase.openOrCreateDatabase(dbFile, null)
@@ -26,7 +28,7 @@ class ExportDataUtil(var context: Context, db: String, private var exportListene
                 when (cursor.getType(i)) {
                     Cursor.FIELD_TYPE_INTEGER -> rowValues.add(cursor.getInt(i).toString())
                     Cursor.FIELD_TYPE_FLOAT -> rowValues.add(cursor.getFloat(i).toString())
-                    Cursor.FIELD_TYPE_STRING -> rowValues.add(cursor.getString(i))
+                    Cursor.FIELD_TYPE_STRING -> rowValues.add("\"${cursor.getString(i)}\"") // Account for "," in String > wrap in double quotes
                     Cursor.FIELD_TYPE_NULL -> rowValues.add("")  // Handle NULL values
                     else -> rowValues.add("")  // Default case
                 }
@@ -55,9 +57,9 @@ class ExportDataUtil(var context: Context, db: String, private var exportListene
             contentValues.clear()
             contentValues.put(MediaStore.Downloads.IS_PENDING, 0) // Mark as complete
             resolver.update(uri, contentValues, null, null)
-            exportListener.success("Success!")
+            Toast.makeText(context, context.getString(R.string.csvSuccessful), Toast.LENGTH_SHORT).show()
         } ?: run {
-            exportListener.fail("Failed to create file URI", "Error writing file")
+            Toast.makeText(context, context.getString(R.string.csvFailed), Toast.LENGTH_SHORT).show()
         }
     }
 

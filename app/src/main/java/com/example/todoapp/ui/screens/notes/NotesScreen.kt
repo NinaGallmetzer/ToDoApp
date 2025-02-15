@@ -55,6 +55,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.todoapp.R
 import com.example.todoapp.data.models.room.Note
+import com.example.todoapp.data.utils.ExportDataUtil
 import com.example.todoapp.supabase
 import com.example.todoapp.ui.navigation.Screens
 import com.example.todoapp.ui.screens.general.CommonAddFAB
@@ -67,7 +68,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun NotesScreen(
-    navController: NavController
+    navController: NavController,
+    exportDataUtil: ExportDataUtil
 ) {
     Box {
         val image = R.drawable.background_portraint
@@ -81,7 +83,7 @@ fun NotesScreen(
             contentScale = ContentScale.FillBounds
         )
         Column {
-            NotesAppBar(navController = navController, title =  stringResource(R.string.notes))
+            NotesAppBar(navController = navController, exportDataUtil = exportDataUtil, title =  stringResource(R.string.notes))
             NotesList(navController = navController)
         }
         CommonAddFAB(
@@ -97,6 +99,7 @@ fun NotesScreen(
 @Composable
 fun NotesAppBar(
     navController: NavController,
+    exportDataUtil: ExportDataUtil,
     title: String
 ) {
     val currentContext = LocalContext.current
@@ -137,8 +140,6 @@ fun NotesAppBar(
                     coroutineScope.launch {
                         notesViewModel.syncData(currentContext)
                     }
-//                    val workRequest = OneTimeWorkRequestBuilder<SyncWorker>().build()
-//                    WorkManager.getInstance(currentContext.applicationContext).enqueue(workRequest)
                 }) {
                     Icon(imageVector = Icons.Default.Sync, contentDescription = stringResource(R.string.add_note))
                     Spacer(modifier = Modifier.width(5.dp))
@@ -147,7 +148,7 @@ fun NotesAppBar(
                 DropdownMenuItem(onClick = {
                     coroutineScope.launch {
                         // TODO
-                        navController.navigate(Screens.Data.route)
+                        exportDataUtil.exportTables()
                     }
                 }) {
                     Icon(imageVector = Icons.Default.Download, contentDescription = stringResource(R.string.add_note))
@@ -177,7 +178,7 @@ fun NotesAppBar(
 
 @Composable
 fun NotesList(
-    navController: NavController,
+    navController: NavController
 ) {
     val coroutineScope = rememberCoroutineScope()
     val currentContext = LocalContext.current
