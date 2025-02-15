@@ -1,9 +1,5 @@
 package com.example.todoapp.ui.screens.general
 
-import android.Manifest
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,16 +31,7 @@ fun DataScreen(
 ) {
     val title = stringResource(R.string.import_export_data)
     val image = R.drawable.background_portraint
-
     val dataScreenViewModel: DataScreenViewModel = viewModel(factory = InjectorUtils.provideDataScreenViewModelFactory(exportDbUtil = exportDbUtil))
-
-    val requestPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            Log.d("permissionManager", "permission granted")
-        }
-    }
 
     Box(
         modifier = Modifier
@@ -68,11 +55,9 @@ fun DataScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MainButton(
-                // TODO translate
                 text = "Export as individual CSV-Files",
                 icon = Icons.Default.Share,
             ) {
-                requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 dataScreenViewModel.downloadTables()
             }
         }
