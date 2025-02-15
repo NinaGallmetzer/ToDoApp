@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteDatabase
 import android.os.Environment
 import android.provider.MediaStore
 import com.opencsv.CSVWriter
-import java.io.File
-import java.io.OutputStreamWriter
+import java.io.*
+import java.util.*
 
 class ExportDbUtil(context: Context, db: String, directoryName: String, private var exporterListener: ExporterListener) {
     var dbName: String
@@ -40,7 +40,7 @@ class ExportDbUtil(context: Context, db: String, directoryName: String, private 
 
     private fun getAllTables(): ArrayList<String> {
         val tables = ArrayList<String>()
-        val cursor = database.rawQuery("select name from sqlite_master where type='table' order by name", null)
+        val cursor = database!!.rawQuery("select name from sqlite_master where type='table' order by name", null)
         while (cursor.moveToNext()) {
             tables.add(cursor.getString(0))
         }
@@ -59,13 +59,11 @@ class ExportDbUtil(context: Context, db: String, directoryName: String, private 
     }
 
     private fun saveCSVToSharedStorage(tableName: String) {
-
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, "${tableName}_${Common().getFileTimeStamp()}.csv")
             put(MediaStore.MediaColumns.MIME_TYPE, "text/csv")
             put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS) // Save to Documents folder
         }
-
         val resolver = context.contentResolver
         val uri = resolver.insert(MediaStore.Files.getContentUri("external"), contentValues)
 
@@ -86,23 +84,35 @@ class ExportDbUtil(context: Context, db: String, directoryName: String, private 
         }
     }
 
-    private fun createCSVForSingleTable(tableName: String, csvWrite: CSVWriter) {
-        val curCSV: Cursor?
-        curCSV = database.rawQuery("SELECT $tableName.* FROM $tableName", null)
-        csvWrite.writeNext(curCSV.columnNames)
-        val arrStr = Array(curCSV.columnCount) { "it = $it" }
+    private fun saveCSVForSingleTable(tableName: String) {
+        val file = File(exportDir, "${tableName}_${Common().getFileTimeStamp()}.csv")
+        try {
+            file.createNewFile()
+            val csvWrite = CSVWriter(FileWriter(file))
+            createCSVForSingleTable(tableName, csvWrite)
+            csvWrite.close()
+            exporterListener.success("$tableName successfully Exported")
+        } catch (sqlEx: Exception) {
+            exporterListener.fail("Export $tableName fail", sqlEx.message.toString())
+        }
+    }
 
-        while (curCSV.moveToNext()) {
+    private fun createCSVForSingleTable(tableName: String, csvWrite: CSVWriter) {
+        val cursor = database!!.rawQuery("SELECT $tableName.* FROM $tableName", null)
+        csvWrite.writeNext(cursor!!.columnNames)
+        val arrStr = Array(cursor.columnCount) { "it = $it" }
+
+        while (cursor.moveToNext()) {
             //Which column you want to exprort
-            for (i in 0..curCSV.columnCount) {
-                if (curCSV.getType(i) == Cursor.FIELD_TYPE_INTEGER) {
-                    arrStr[i] = curCSV.getInt(i).toString()
-                } else if (curCSV.getType(i) == Cursor.FIELD_TYPE_STRING) {
-                    arrStr[i] = (curCSV.getString(i))
+            for (i in 0..cursor.columnCount) {
+                if (cursor.getType(i) == Cursor.FIELD_TYPE_INTEGER) {
+                    arrStr[i] = cursor.getInt(i).toString()
+                } else if (cursor.getType(i) == Cursor.FIELD_TYPE_STRING) {
+                    arrStr[i] = (cursor.getString(i))
                 }
             }
             csvWrite.writeNext(arrStr)
         }
-        curCSV.close()
+        cursor.close()
     }
 }
