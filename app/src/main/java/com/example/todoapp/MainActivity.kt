@@ -1,8 +1,6 @@
 package com.example.todoapp
 
-import android.content.Context
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.todoapp.data.utils.ExportDataUtil
-import com.example.todoapp.data.utils.ExportListener
 import com.example.todoapp.ui.navigation.SetupNavGraph
 import com.example.todoapp.ui.theme.ToDoAppTheme
 import io.github.jan.supabase.auth.Auth
@@ -35,14 +32,13 @@ val supabase = createSupabaseClient(
     install(Realtime)
 }
 
-class MainActivity : ComponentActivity(), ExportListener {
+class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val exportDataUtil = ExportDataUtil(
             this,
-            "todo_db",
-            this
+            "todo_db"
         )
 
         var navController: NavHostController
@@ -72,19 +68,5 @@ class MainActivity : ComponentActivity(), ExportListener {
         WorkManager.getInstance(applicationContext).enqueue(syncWorkRequest)
     }
  */
-
-    override fun fail(message: String, exception: String) {
-        println("Export failed. Message: $message, Exception: $exception")
-        mToast(this, getString(R.string.csvFailed))
-    }
-
-    override fun success(message: String) {
-        println("DB Successfully exported as csv")
-        mToast(this, getString(R.string.csvSuccessful))
-    }
-
-    private fun mToast(context: Context, txt: String){
-        Toast.makeText(context, txt, Toast.LENGTH_SHORT).show()
-    }
 
 }
