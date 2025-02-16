@@ -88,7 +88,7 @@ fun NotesAddEditScreen(
                         textLabel = stringResource(R.string.title) + " *",
                         keyboardType = KeyboardType.Text,
                         onValueChange = {
-                            notesAddEditViewModel.updateNote(
+                            notesAddEditViewModel.updateNoteView(
                                 notesAddEditViewModel.note.copy(
                                     title = it)
                             )
@@ -105,7 +105,7 @@ fun NotesAddEditScreen(
                         textLabel = stringResource(R.string.comment),
                         keyboardType = KeyboardType.Text,
                         onValueChange = {
-                            notesAddEditViewModel.updateNote(
+                            notesAddEditViewModel.updateNoteView(
                                 notesAddEditViewModel.note.copy(
                                     content = it
                                 )
@@ -141,4 +141,5 @@ fun NotesAddEditScreen(
             }
         }
     }
+
 }

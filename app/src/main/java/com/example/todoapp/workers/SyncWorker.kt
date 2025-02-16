@@ -21,17 +21,12 @@ class SyncWorker(
         Log.d("Test", "Test003")
         return withContext(Dispatchers.IO) {
             try {
-                syncData()
+                noteRepository.syncNotes(context = currentContext)
                 Result.success()
             } catch (e: Exception) {
                 Result.failure()
             }
         }
-    }
-
-    private suspend fun syncData() {
-        noteRepository.updateRoom(currentContext)
-//        noteRepository.updateSupabase(currentContext) // TODO solve problem using Toast
     }
 
     private fun getNoteRepository(context: Context): NoteRepository {

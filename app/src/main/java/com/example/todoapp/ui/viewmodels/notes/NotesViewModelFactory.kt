@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.todoapp.data.repositories.NoteRepository
 
 @Suppress("UNCHECKED_CAST")
-class NotesViewModelFactory(private val repository: NoteRepository): ViewModelProvider.Factory {
+class NotesViewModelFactory(private val noteRepository: NoteRepository): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NotesViewModel::class.java)) {
-            return NotesViewModel(repository) as T
+            return NotesViewModel(noteRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

@@ -37,7 +37,7 @@ abstract class ToDoDatabase : RoomDatabase() {
                             super.onCreate(db)
                             CoroutineScope(Dispatchers.IO).launch {
                                 val seedDatabaseWorker = SeedDatabaseWorker()
-                                seedDatabaseWorker.seedDatabase(getDatabase(context), context)
+                                seedDatabaseWorker.seedDatabase(getDatabase(context))
                             }
                         }
                     })

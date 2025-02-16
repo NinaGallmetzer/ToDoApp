@@ -1,11 +1,10 @@
 package com.example.todoapp.ui.screens.notes
 
-import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +34,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Sync
-import androidx.compose.material.icons.filled.SyncAlt
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -46,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -56,10 +55,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.example.todoapp.R
 import com.example.todoapp.data.models.room.Note
+import com.example.todoapp.data.utils.Common
 import com.example.todoapp.data.utils.ExportDataUtil
 import com.example.todoapp.supabase
 import com.example.todoapp.ui.navigation.Screens
@@ -68,7 +66,6 @@ import com.example.todoapp.ui.screens.general.showDialog
 import com.example.todoapp.ui.theme.Shapes
 import com.example.todoapp.ui.viewmodels.InjectorUtils
 import com.example.todoapp.ui.viewmodels.notes.NotesViewModel
-import com.example.todoapp.workers.SyncWorker
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.launch
 
@@ -110,7 +107,6 @@ fun NotesAppBar(
 ) {
     val currentContext = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val notesViewModel: NotesViewModel = viewModel(factory = InjectorUtils.provideNotesViewModelFactory(currentContext))
 
     Row(modifier = Modifier
         .background(colorResource(R.color.blue_500))
@@ -144,7 +140,7 @@ fun NotesAppBar(
             ) {
                 DropdownMenuItem(onClick = {
                     coroutineScope.launch {
-                        notesViewModel.syncData(currentContext)
+                        Common().startSyncWorker(currentContext)
                     }
                 }) {
                     Icon(imageVector = Icons.Default.Sync, contentDescription = stringResource(R.string.add_note))
@@ -175,18 +171,6 @@ fun NotesAppBar(
                     Spacer(modifier = Modifier.width(5.dp))
                     Text("LogOut")
                 }
-                DropdownMenuItem(onClick = {
-                    coroutineScope.launch {
-                        Log.d("Test", "Test001")
-                        startTestWorker(currentContext)
-                        Log.d("Test", "Test005")
-                    }
-                }) {
-                    Icon(imageVector = Icons.Default.SyncAlt, contentDescription = stringResource(R.string.add_note))
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text("TestWorker")
-                }
-
             }
         }
     }
@@ -244,6 +228,11 @@ fun NotesList(
                                 navController.navigate(Screens.NotesAddEdit.createRoute(noteId = note.noteId))
                             }
                         },
+                        onItemLongClick = {
+                            coroutineScope.launch {
+                                navController.navigate(Screens.NotesAddEdit.createRoute(noteId = note.noteId))
+                            }
+                        },
                         onDeleteClick = {
                             coroutineScope.launch {
                                 showDialog(
@@ -254,7 +243,7 @@ fun NotesList(
                                     negative = cancel,
                                     onPositiveClick = {
                                         coroutineScope.launch {
-                                            notesViewModel.delete(note)
+                                            notesViewModel.markDeletedInRoom(note)
                                         }
                                     },
                                     onNegativeClick = {}
@@ -272,6 +261,7 @@ fun NotesList(
 fun NoteRow(
     note: Note = Note(),
     onItemClick: (Note) -> Unit = {},
+    onItemLongClick: (Note) -> Unit = {},
     onDeleteClick: (Note) -> Unit = {},
 ) {
     var deleteState by remember { mutableStateOf(false) }
@@ -280,8 +270,11 @@ fun NoteRow(
     Card(modifier = Modifier
         .fillMaxWidth()
         .padding(5.dp)
-        .clickable {
-            onItemClick(note)
+        .pointerInput(Unit) { // Detect both tap and long press
+            detectTapGestures(
+                onTap = { onItemClick(note) },
+                onLongPress = { onItemLongClick(note) }
+            )
         },
         shape = Shapes.small,
     ) {
@@ -354,12 +347,3 @@ fun Details(note: Note = Note()) {
         Text("${stringResource(R.string.comment)}: ${note.content ?: ""}", style = noteDescriptionStyle)
     }
 }
-
-private fun startTestWorker(context: Context) {
-    Log.d("Test", "Test002")
-    val workRequest = OneTimeWorkRequest.Builder(SyncWorker::class.java).build()
-    Log.d("Test", "Test004")
-    WorkManager.getInstance(context.applicationContext).enqueue(workRequest)
-
-}
-

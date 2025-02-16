@@ -13,7 +13,7 @@ class ToDoApp : Application() {
         super.onCreate()
 
         // Initialize WorkManager
-//        setupBackgroundSync()
+        setupBackgroundSync()
     }
 
     private fun setupBackgroundSync() {

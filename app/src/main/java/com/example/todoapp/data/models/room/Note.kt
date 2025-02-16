@@ -20,7 +20,7 @@ data class Note (
     var content: String? = null,
     var createdAt: String = Common().getSupabaseTimeStamp(),
     var syncedAt: String? = null,
-    var syncType: SyncType = SyncType.synced,
+    var syncType: SyncType = SyncType.add,
 ) {
     fun toSupabaseNote(): SupabaseNote = SupabaseNote(
         note_id = noteId,

@@ -29,15 +29,15 @@ class NotesAddEditViewModel(
         }
     }
 
-    fun updateNote(newNote: Note) {
+    fun updateNoteView(newNote: Note) {
         note = newNote
     }
 
     suspend fun saveNote(){
         if(noteId == "") {
-            noteRepository.add(note)
+            noteRepository.addToRoom(note)
         } else {
-            noteRepository.update(note)
+            noteRepository.updateInRoom(note)
         }
     }
 }

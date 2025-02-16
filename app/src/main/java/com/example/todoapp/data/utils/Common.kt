@@ -1,18 +1,19 @@
 package com.example.todoapp.data.utils
 
 import android.content.Context
+import android.util.Log
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import com.example.todoapp.workers.SyncWorker
 import java.text.SimpleDateFormat
 import java.time.Instant
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
 class Common {
 
     fun getSupabaseTimeStamp(): String {
-//        return Instant.now().toString()
-        return ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+        return Instant.now().toString()
     }
 
     fun getFileTimeStamp(): String {
@@ -24,7 +25,7 @@ class Common {
     fun saveLastFetchTime(context: Context) {
         val sharedPref = context.getSharedPreferences("sync_prefs", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
-            putString("last_sync_time", Instant.now().toString()) // Save as string
+            putString("last_sync_time", getSupabaseTimeStamp()) // Save as string
             apply()
         }
     }
@@ -40,5 +41,12 @@ class Common {
         }
     }
 
+    fun startSyncWorker(context: Context) {
+        Log.d("Test", "Test002")
+        val workRequest = OneTimeWorkRequest.Builder(SyncWorker::class.java).build()
+        Log.d("Test", "Test004")
+        WorkManager.getInstance(context.applicationContext).enqueue(workRequest)
+
+    }
 
 }

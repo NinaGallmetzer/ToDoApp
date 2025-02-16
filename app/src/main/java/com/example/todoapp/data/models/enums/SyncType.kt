@@ -4,5 +4,6 @@ enum class SyncType {
     synced,
     add,
     update,
-    delete;
+    delete,
+    newFromSupabase;
 }

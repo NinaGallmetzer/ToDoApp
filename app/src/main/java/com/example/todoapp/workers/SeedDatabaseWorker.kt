@@ -1,18 +1,28 @@
 package com.example.todoapp.workers
 
-import android.content.Context
 import androidx.room.RoomDatabase
 import com.example.todoapp.data.ToDoDatabase
 import com.example.todoapp.data.daos.NoteDao
-import com.example.todoapp.data.repositories.NoteRepository
+import com.example.todoapp.data.models.enums.SyncType
+import com.example.todoapp.data.models.supabase.SupabaseNote
+import com.example.todoapp.supabase
+import io.github.jan.supabase.postgrest.from
 
 class SeedDatabaseWorker : RoomDatabase.Callback() {
     private lateinit var noteDao: NoteDao
-    private lateinit var noteRepository: NoteRepository
 
-    suspend fun seedDatabase(database: ToDoDatabase, context: Context) {
+    suspend fun seedDatabase(database: ToDoDatabase) {
         noteDao = database.noteDao()
-        noteRepository = NoteRepository(noteDao, context)
-        noteRepository.updateRoom(context)
+        seedDatabase()
     }
+
+    private suspend fun seedDatabase() {
+        supabase.from("note")
+            .select()
+            .decodeList<SupabaseNote>()
+            .forEach { note ->
+                noteDao.add(note.toRoomNote(SyncType.synced))
+            }
+    }
+
 }
