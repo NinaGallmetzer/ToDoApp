@@ -9,6 +9,12 @@ import com.example.todoapp.workers.SyncWorker
 import java.util.concurrent.TimeUnit
 
 class ToDoApp : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        // Initialize WorkManager
+//        setupBackgroundSync()
+    }
 
     private fun setupBackgroundSync() {
         val constraints = Constraints.Builder()
