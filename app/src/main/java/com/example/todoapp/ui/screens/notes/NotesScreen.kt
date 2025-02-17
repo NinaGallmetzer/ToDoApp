@@ -215,7 +215,7 @@ fun NotesList(
                 label = { Text(stringResource(id = R.string.search)) },
                 modifier = Modifier.fillMaxWidth(),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    textColor = MaterialTheme.colors.onBackground,
+                    textColor = MaterialTheme.colors.onSurface,
                     focusedBorderColor = MaterialTheme.colors.background,
                     unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
                     focusedLabelColor = MaterialTheme.colors.background,
@@ -297,7 +297,8 @@ fun NoteRow(
                     .padding(10.dp)
                 ) {
                     Text(text = note.title,
-                        style = MaterialTheme.typography.h5)
+                        style = MaterialTheme.typography.h5,
+                        color = MaterialTheme.colors.onSurface)
                 }
 
                 Box(modifier = Modifier
@@ -345,6 +346,7 @@ fun NoteRow(
 fun Details(note: Note = Note()) {
     val noteDescriptionStyle = TextStyle(
         fontSize = MaterialTheme.typography.subtitle2.fontSize,
+        color = MaterialTheme.colors.onSurface,
         fontWeight = FontWeight.Normal,
     )
     Column(
