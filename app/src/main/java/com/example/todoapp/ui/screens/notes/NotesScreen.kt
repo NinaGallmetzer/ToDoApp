@@ -219,6 +219,7 @@ fun NotesList(
                     focusedBorderColor = MaterialTheme.colors.background,
                     unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
                     focusedLabelColor = MaterialTheme.colors.background,
+                    unfocusedLabelColor = MaterialTheme.colors.background,
                     cursorColor = MaterialTheme.colors.background
                 )
             )

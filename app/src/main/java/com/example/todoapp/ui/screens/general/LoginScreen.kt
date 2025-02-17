@@ -90,6 +90,7 @@ fun LoginScreen(
                     focusedBorderColor = MaterialTheme.colors.background,
                     unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
                     focusedLabelColor = MaterialTheme.colors.background,
+                    unfocusedLabelColor = MaterialTheme.colors.background,
                     cursorColor = MaterialTheme.colors.background
                 ),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -112,6 +113,7 @@ fun LoginScreen(
                     focusedBorderColor = MaterialTheme.colors.background,
                     unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
                     focusedLabelColor = MaterialTheme.colors.background,
+                    unfocusedLabelColor = MaterialTheme.colors.background,
                     cursorColor = MaterialTheme.colors.background
                 ),
                 visualTransformation = if (showPassword) {
@@ -125,6 +127,7 @@ fun LoginScreen(
                         IconButton(onClick = { showPassword = false }) {
                             Icon(
                                 imageVector = Icons.Filled.Visibility,
+                                tint = MaterialTheme.colors.background,
                                 contentDescription = "hide_password"
                             )
                         }
@@ -133,6 +136,7 @@ fun LoginScreen(
                             onClick = { showPassword = true }) {
                             Icon(
                                 imageVector = Icons.Filled.VisibilityOff,
+                                tint = MaterialTheme.colors.background,
                                 contentDescription = "hide_password"
                             )
                         }
