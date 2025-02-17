@@ -22,10 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -37,7 +35,6 @@ import com.example.todoapp.R
 import com.example.todoapp.ui.navigation.Screens
 import com.example.todoapp.ui.screens.general.CommonAppBar
 import com.example.todoapp.ui.screens.general.CustomOutlinedTextField
-import com.example.todoapp.ui.theme.Shapes
 import com.example.todoapp.ui.viewmodels.InjectorUtils
 import com.example.todoapp.ui.viewmodels.notes.NotesAddEditViewModel
 import kotlinx.coroutines.launch
@@ -69,8 +66,8 @@ fun NotesAddEditScreen(
             Box (modifier = Modifier
                 .padding(10.dp)
                 .background(
-                    color = colorResource(R.color.white),
-                    shape = Shapes.large
+                    color = MaterialTheme.colors.surface,
+                    shape = MaterialTheme.shapes.large
                 ),
             ) {
                 Column(modifier = Modifier
@@ -120,10 +117,10 @@ fun NotesAddEditScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(60.dp),
-                        shape = Shapes.medium,
+                        shape = MaterialTheme.shapes.medium,
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = colorResource(R.color.blue_500),
-                            contentColor = Color.White
+                            backgroundColor = MaterialTheme.colors.background,
+                            contentColor = MaterialTheme.colors.onBackground
                         ),
                         onClick = {
                             coroutineScope.launch {
@@ -134,7 +131,7 @@ fun NotesAddEditScreen(
                         Text(
                             text = "Save",
                             style = MaterialTheme.typography.button.copy(fontSize = 18.sp),
-                            color = Color.White
+                            color = MaterialTheme.colors.onBackground
                         )
                     }
                 }

@@ -28,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -87,10 +86,11 @@ fun LoginScreen(
                 textStyle = TextStyle(fontSize = 18.sp),
                 shape = Shapes.medium,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = colorResource(R.color.blue_500),
+                    textColor = MaterialTheme.colors.onBackground,
+                    focusedBorderColor = MaterialTheme.colors.background,
                     unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
-                    focusedLabelColor = colorResource(R.color.blue_500),
-                    cursorColor = colorResource(R.color.blue_500)
+                    focusedLabelColor = MaterialTheme.colors.background,
+                    cursorColor = MaterialTheme.colors.background
                 ),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             )
@@ -108,10 +108,11 @@ fun LoginScreen(
                 textStyle = TextStyle(fontSize = 18.sp),
                 shape = Shapes.medium,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = colorResource(R.color.blue_500),
+                    textColor = MaterialTheme.colors.onBackground,
+                    focusedBorderColor = MaterialTheme.colors.background,
                     unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
-                    focusedLabelColor = colorResource(R.color.blue_500),
-                    cursorColor = colorResource(R.color.blue_500)
+                    focusedLabelColor = MaterialTheme.colors.background,
+                    cursorColor = MaterialTheme.colors.background
                 ),
                 visualTransformation = if (showPassword) {
                     VisualTransformation.None

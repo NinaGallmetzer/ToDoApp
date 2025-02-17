@@ -37,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -47,7 +46,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.todoapp.R
-import com.example.todoapp.ui.theme.Shapes
 
 @Composable
 fun CommonAppBar(
@@ -58,14 +56,14 @@ fun CommonAppBar(
         .fillMaxWidth(),
     ) {
         Row(modifier = Modifier
-            .background(colorResource(R.color.blue_500))
+            .background(MaterialTheme.colors.background)
             .padding(horizontal = 10.dp, vertical = 15.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Return",
-                tint = Color.White,
+                tint = MaterialTheme.colors.background,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .clickable(onClick = {
@@ -79,7 +77,7 @@ fun CommonAppBar(
                 textAlign = TextAlign.Center,
                 text = title,
                 style = MaterialTheme.typography.h6,
-                color = Color.White
+                color = MaterialTheme.colors.onBackground
             )
         }
     }
@@ -90,8 +88,8 @@ fun MainButton(
     modifier: Modifier = Modifier,
     text: String,
     icon: ImageVector? = null,
-    backgroundColor: Color = colorResource(R.color.blue_200),
-    contentColor: Color = Color.White,
+    backgroundColor: Color = MaterialTheme.colors.background,
+    contentColor: Color = MaterialTheme.colors.onBackground,
 
     shape: RoundedCornerShape = RoundedCornerShape(24),
     padding: PaddingValues = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
@@ -190,12 +188,12 @@ fun CustomOutlinedTextField(
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             modifier = Modifier.fillMaxWidth().fillMaxHeight(),
             textStyle = TextStyle(fontSize = 18.sp),
-            shape = Shapes.medium,
+            shape = MaterialTheme.shapes.medium,
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = colorResource(R.color.blue_500),
+                focusedBorderColor = MaterialTheme.colors.background,
                 unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
-                focusedLabelColor = colorResource(R.color.blue_500),
-                cursorColor = colorResource(R.color.blue_500)
+                focusedLabelColor = MaterialTheme.colors.background,
+                cursorColor = MaterialTheme.colors.background
             )
         )
     }

@@ -25,6 +25,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
@@ -43,11 +44,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -63,7 +62,6 @@ import com.example.todoapp.supabase
 import com.example.todoapp.ui.navigation.Screens
 import com.example.todoapp.ui.screens.general.CommonAddFAB
 import com.example.todoapp.ui.screens.general.showDialog
-import com.example.todoapp.ui.theme.Shapes
 import com.example.todoapp.ui.viewmodels.InjectorUtils
 import com.example.todoapp.ui.viewmodels.notes.NotesViewModel
 import io.github.jan.supabase.auth.auth
@@ -109,7 +107,7 @@ fun NotesAppBar(
     val coroutineScope = rememberCoroutineScope()
 
     Row(modifier = Modifier
-        .background(colorResource(R.color.blue_500))
+        .background(MaterialTheme.colors.background)
         .fillMaxWidth()
         .padding(horizontal = 10.dp, vertical = 15.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -117,17 +115,17 @@ fun NotesAppBar(
         var optionsState by remember {
             mutableStateOf(false)
         }
-        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Return", tint = Color.White,
+        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Return", tint = MaterialTheme.colors.onBackground,
             modifier = Modifier.clickable(onClick = {
                 navController.popBackStack()
             }),
         )
-        Text(text = title, style = MaterialTheme.typography.h6, color = Color.White)
+        Text(text = title, style = MaterialTheme.typography.h6, color = MaterialTheme.colors.onBackground)
         Column {
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = "Settings",
-                tint = Color.White,
+                tint = MaterialTheme.colors.onBackground,
                 modifier = Modifier.clickable(onClick = {
                     optionsState = !optionsState
                 }),
@@ -215,7 +213,14 @@ fun NotesList(
                 value = searchText,
                 onValueChange = { searchText = it },
                 label = { Text(stringResource(id = R.string.search)) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    textColor = MaterialTheme.colors.onBackground,
+                    focusedBorderColor = MaterialTheme.colors.background,
+                    unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
+                    focusedLabelColor = MaterialTheme.colors.background,
+                    cursorColor = MaterialTheme.colors.background
+                )
             )
 
             LazyColumn(
@@ -279,7 +284,7 @@ fun NoteRow(
                 onLongPress = { onItemLongClick(note) }
             )
         },
-        shape = Shapes.small,
+        shape = MaterialTheme.shapes.small,
     ) {
         Column (modifier = Modifier
             .padding(5.dp),
@@ -302,7 +307,7 @@ fun NoteRow(
                 ) {
                     Column {
                         Icon(
-                            tint = Color.Black,
+                            tint = MaterialTheme.colors.onBackground,
                             imageVector = Icons.Default.Delete,
                             contentDescription = stringResource(id = R.string.delete_note),
                             modifier = Modifier
