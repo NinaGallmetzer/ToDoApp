@@ -119,7 +119,10 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
                 SyncType.update -> updateInSupabaseAndRoom(noteToSync, syncTime)
                 SyncType.delete -> deleteFromSupabaseAndRoom(noteToSync)
                 SyncType.synced -> {}
-                SyncType.newFromSupabase -> {}
+                SyncType.newFromSupabase -> {
+                    noteToSync.syncedAt = syncTime
+                    addToRoom(noteToSync)
+                }
             }
         }
     }

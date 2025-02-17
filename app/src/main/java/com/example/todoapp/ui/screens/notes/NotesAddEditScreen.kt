@@ -69,7 +69,7 @@ fun NotesAddEditScreen(
             Box (modifier = Modifier
                 .padding(10.dp)
                 .background(
-                    color = Color(0xCFFFFFFF),
+                    color = colorResource(R.color.white),
                     shape = Shapes.large
                 ),
             ) {

@@ -1,7 +1,6 @@
 package com.example.todoapp.workers
 
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.todoapp.data.ToDoDatabase
@@ -18,7 +17,6 @@ class SyncWorker(
     private val noteRepository = getNoteRepository(context)
 
     override suspend fun doWork(): Result {
-        Log.d("Test", "Test003")
         return withContext(Dispatchers.IO) {
             try {
                 noteRepository.syncNotes(context = currentContext)
