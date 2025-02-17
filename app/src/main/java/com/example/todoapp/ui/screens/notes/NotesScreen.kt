@@ -161,7 +161,10 @@ fun NotesAppBar(
                     coroutineScope.launch {
                         try {
                             supabase.auth.clearSession()
-                            navController.navigate(Screens.Login.route)
+                            navController.navigate(Screens.Login.route) {
+                                popUpTo(Screens.Login.route) { inclusive = true } // Remove all screens up to and including the specified destination from the back stack
+                                launchSingleTop = true // Ensure the new screen is launched as a single instance, and any other instance of the same screen is removed
+                            }
                         } catch (e: Exception) {
                             Toast.makeText(currentContext, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
