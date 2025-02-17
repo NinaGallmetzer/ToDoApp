@@ -137,7 +137,7 @@ fun LoginScreen(
                             Icon(
                                 imageVector = Icons.Filled.VisibilityOff,
                                 tint = MaterialTheme.colors.background,
-                                contentDescription = "hide_password"
+                                contentDescription = "show_password"
                             )
                         }
                     }
