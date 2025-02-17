@@ -121,6 +121,7 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
                 SyncType.synced -> {}
                 SyncType.newFromSupabase -> {
                     noteToSync.syncedAt = syncTime
+                    noteToSync.syncType = SyncType.synced
                     addToRoom(noteToSync)
                 }
             }
