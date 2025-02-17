@@ -63,7 +63,7 @@ fun CommonAppBar(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Return",
-                tint = MaterialTheme.colors.background,
+                tint = MaterialTheme.colors.onBackground,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .clickable(onClick = {
