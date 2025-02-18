@@ -45,6 +45,7 @@ dependencies {
     // Android Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.runtime.livedata)
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
