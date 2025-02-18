@@ -7,8 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ItemDao {
-    @Query("SELECT * FROM Item ORDER BY title ASC")
-    fun getAllItems(): Flow<List<Item>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(item: Item)
@@ -28,7 +26,7 @@ interface ItemDao {
     @Query("SELECT * FROM Item WHERE syncType != :syncedType")
     suspend fun getUnsyncedItems(syncedType: SyncType = SyncType.synced): List<Item>
 
-    @Query("SELECT * FROM Item WHERE checked")
-    suspend fun getCheckedItems(): List<Item>
+    @Query("SELECT * FROM Item WHERE noteId=:noteId AND checked")
+    suspend fun getCheckedItemsOfNote(noteId: String): List<Item>
 
 }

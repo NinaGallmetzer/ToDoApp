@@ -162,7 +162,7 @@ fun ItemsAppBar(
                             negative = cancel,
                             onPositiveClick = {
                                 coroutineScope.launch {
-                                    itemsViewModel.markCheckedDeletedInRoom()
+                                    itemsViewModel.markCheckedDeletedInRoom(noteId)
                                 }
                             },
                             onNegativeClick = {}
