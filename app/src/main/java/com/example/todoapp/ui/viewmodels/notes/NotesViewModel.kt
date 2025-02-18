@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.todoapp.data.models.enums.SyncType
 import com.example.todoapp.data.models.room.Note
 import com.example.todoapp.data.repositories.NoteRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,6 +22,10 @@ class NotesViewModel(private val noteRepository: NoteRepository) : ViewModel() {
                 _notes.value = notes.filter { it.syncType != SyncType.delete }
             }
         }
+    }
+
+    fun getNoteById(noteId: String): Flow<Note> {
+        return noteRepository.getNoteById(noteId)
     }
 
     suspend fun markDeletedInRoom(note: Note) {
