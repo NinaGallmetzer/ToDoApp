@@ -105,6 +105,12 @@ fun ItemsAppBar(
 ) {
     val currentContext = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val itemsViewModel: ItemsViewModel = viewModel(factory = InjectorUtils.provideItemsViewModelFactory(context = currentContext, noteId = noteId))
+
+    val title = "${ stringResource(id = R.string.delete) } ${ stringResource(id = R.string.item) }"
+    val message = stringResource(id = R.string.delete_all_items_message)
+    val confirm = stringResource(id = R.string.delete)
+    val cancel = stringResource(id = R.string.cancel)
 
     Row(modifier = Modifier
         .background(MaterialTheme.colors.background)
@@ -144,6 +150,28 @@ fun ItemsAppBar(
                     Icon(imageVector = Icons.Default.Sync, contentDescription = stringResource(R.string.add_note))
                     Spacer(modifier = Modifier.width(5.dp))
                     Text("Sync")
+                }
+                DropdownMenuItem(onClick = {
+                    optionsState = false
+                    coroutineScope.launch {
+                        showDialog(
+                            context = currentContext,
+                            title = title,
+                            message = message,
+                            positive = confirm,
+                            negative = cancel,
+                            onPositiveClick = {
+                                coroutineScope.launch {
+                                    itemsViewModel.markCheckedDeletedInRoom()
+                                }
+                            },
+                            onNegativeClick = {}
+                        )
+                    }
+                }) {
+                    Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(R.string.add_note))
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text("Delete Checked Items")
                 }
                 DropdownMenuItem(onClick = {
                     optionsState = false

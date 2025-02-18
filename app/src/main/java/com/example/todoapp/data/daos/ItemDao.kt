@@ -28,4 +28,7 @@ interface ItemDao {
     @Query("SELECT * FROM Item WHERE syncType != :syncedType")
     suspend fun getUnsyncedItems(syncedType: SyncType = SyncType.synced): List<Item>
 
+    @Query("SELECT * FROM Item WHERE checked")
+    suspend fun getCheckedItems(): List<Item>
+
 }

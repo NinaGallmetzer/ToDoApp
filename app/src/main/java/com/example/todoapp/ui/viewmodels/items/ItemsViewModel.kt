@@ -33,10 +33,12 @@ class ItemsViewModel(private val itemRepository: ItemRepository, private val not
         }
     }
 
-    fun markDeletedInRoom(item: Item) {
-        viewModelScope.launch {
-            itemRepository.markDeletedInRoom(item)
-        }
+    suspend fun markDeletedInRoom(item: Item) {
+        itemRepository.markDeletedInRoom(item)
+    }
+
+    suspend fun markCheckedDeletedInRoom() {
+        itemRepository.markAllCheckedAsDeleteInRoom()
     }
 
 }
