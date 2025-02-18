@@ -112,9 +112,8 @@ fun NotesAppBar(
         .padding(horizontal = 10.dp, vertical = 15.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ){
-        var optionsState by remember {
-            mutableStateOf(false)
-        }
+        var optionsState by remember { mutableStateOf(false) }
+
         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Return", tint = MaterialTheme.colors.onBackground,
             modifier = Modifier.clickable(onClick = {
                 navController.popBackStack()
@@ -137,8 +136,10 @@ fun NotesAppBar(
                 },
             ) {
                 DropdownMenuItem(onClick = {
+                    optionsState = false
                     coroutineScope.launch {
-                        Common().startSyncWorker(currentContext)
+                      Common().startSyncWorker(currentContext)
+                        // TODO show result as Toast
                     }
                 }) {
                     Icon(imageVector = Icons.Default.Sync, contentDescription = stringResource(R.string.add_note))
@@ -146,8 +147,8 @@ fun NotesAppBar(
                     Text("Sync")
                 }
                 DropdownMenuItem(onClick = {
+                    optionsState = false
                     coroutineScope.launch {
-                        // TODO
                         exportDataUtil.exportTables()
                     }
                 }) {
@@ -156,6 +157,7 @@ fun NotesAppBar(
                     Text("Download")
                 }
                 DropdownMenuItem(onClick = {
+                    optionsState = false
                     coroutineScope.launch {
                         try {
                             supabase.auth.clearSession()
