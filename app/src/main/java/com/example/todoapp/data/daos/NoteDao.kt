@@ -1,7 +1,6 @@
 package com.example.todoapp.data.daos
 
 import androidx.room.*
-import com.example.todoapp.data.models.enums.SyncType
 import com.example.todoapp.data.models.room.Note
 import kotlinx.coroutines.flow.Flow
 
@@ -22,7 +21,7 @@ interface NoteDao {
     @Query("SELECT * FROM Note WHERE noteId=:noteId")
     fun getNoteById(noteId: String): Flow<Note>
 
-    @Query("SELECT * FROM Note WHERE syncType != :syncedType")
-    suspend fun getUnsyncedNotes(syncedType: SyncType = SyncType.synced): List<Note>
+    @Query("SELECT * FROM Note ORDER BY title ASC")
+    suspend fun getAllNotesAsList(): List<Note>
 
 }

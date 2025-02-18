@@ -5,8 +5,8 @@ import com.example.todoapp.data.daos.NoteDao
 import com.example.todoapp.data.models.enums.SyncType
 import com.example.todoapp.data.models.room.Note
 import com.example.todoapp.data.models.supabase.SupabaseNote
-import com.example.todoapp.supabase
 import com.example.todoapp.data.utils.Common
+import com.example.todoapp.supabase
 import com.example.todoapp.workers.NetworkChecker
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.Flow
@@ -67,11 +67,7 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
         return notes
     }
 
-    private suspend fun fetchUnsyncedNotesRoom(): List<Note> {
-        return noteDao.getUnsyncedNotes()
-    }
-
-    private fun mergeNotes(roomNotes: List<Note>, supabaseNotes: List<SupabaseNote>): List<Note> {
+    private suspend fun mergeNotes(roomNotes: List<Note>, supabaseNotes: List<SupabaseNote>): List<Note> {
         val roomNotesMap = roomNotes
             .associateBy { it.noteId }
         val supabaseNotesMap = supabaseNotes
@@ -96,7 +92,24 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
                         supabaseNote
                     }
                 }
-                roomNote != null -> roomNote
+                roomNote != null -> {
+                    // if roomnote synctype = add > roomnote
+                    // if roomnote synctype = update > roomnote (set syncType to add?)
+                    // if roomnote synctype = synced > delete from room
+                    // if roomnote synctype = delete > roomnote
+
+                    if (roomNote.syncType == SyncType.add || roomNote.syncType == SyncType.delete) {
+                        roomNote
+                    } else if (roomNote.syncType == SyncType.update) {
+                        roomNote.syncType = SyncType.add
+                        roomNote
+                    } else if (roomNote.syncType == SyncType.synced) {
+                        noteDao.delete(roomNote)
+                        null
+                    } else {
+                        null
+                    }
+                }
                 supabaseNote != null -> supabaseNote
                 else -> null
             }
@@ -109,7 +122,7 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
     suspend fun syncNotes(context: Context) {
         if (networkChecker.isConnected()) {
             val supabaseNotes = fetchUnsyncedNotesSupabase(context)
-            val roomNotes = fetchUnsyncedNotesRoom()
+            val roomNotes = noteDao.getAllNotesAsList()
             val notesToSync = mergeNotes(roomNotes, supabaseNotes)
             val syncTime = Common().getSupabaseTimeStamp()
             updateBothDatabases(notesToSync, syncTime)
@@ -132,7 +145,6 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
         note.syncedAt = syncTime
         note.syncType = SyncType.synced
         noteDao.add(note)
-
     }
 
     private suspend fun addToSupabaseAndUpdateInRoom(note: Note, syncTime: String) {
