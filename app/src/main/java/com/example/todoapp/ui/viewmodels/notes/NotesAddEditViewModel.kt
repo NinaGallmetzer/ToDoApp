@@ -29,8 +29,8 @@ class NotesAddEditViewModel(
         }
     }
 
-    fun updateNoteView(newNote: Note) {
-        note = newNote
+    fun updateViewNote(note: Note) {
+        this.note = note
     }
 
     suspend fun saveNote(){
