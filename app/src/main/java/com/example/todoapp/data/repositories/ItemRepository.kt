@@ -31,8 +31,8 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
     fun getItemById(itemId: String): Flow<Item> {
         return itemDao.getItemById(itemId)
     }
-    suspend fun getCheckedItems(): List<Item> {
-        return itemDao.getCheckedItems()
+    suspend fun getCheckedItemsOfNote(noteId: String): List<Item> {
+        return itemDao.getCheckedItemsOfNote(noteId)
     }
 
     suspend fun addToRoom(item: Item) {
@@ -53,8 +53,8 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
         item.syncType = SyncType.delete
         itemDao.update(item)
     }
-    suspend fun markAllCheckedAsDeleteInRoom() {
-        val checkedItems = getCheckedItems()
+    suspend fun markCheckedAsDeleteInRoom(noteId: String) {
+        val checkedItems = getCheckedItemsOfNote(noteId)
         checkedItems.forEach { item ->
             markDeletedInRoom(item)
         }

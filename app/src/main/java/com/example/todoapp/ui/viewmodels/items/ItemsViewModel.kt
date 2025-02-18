@@ -37,8 +37,8 @@ class ItemsViewModel(private val itemRepository: ItemRepository, private val not
         itemRepository.markDeletedInRoom(item)
     }
 
-    suspend fun markCheckedDeletedInRoom() {
-        itemRepository.markAllCheckedAsDeleteInRoom()
+    suspend fun markCheckedDeletedInRoom(noteId: String) {
+        itemRepository.markCheckedAsDeleteInRoom(noteId)
     }
 
 }
