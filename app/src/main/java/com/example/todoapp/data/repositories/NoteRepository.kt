@@ -38,8 +38,12 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
     }
 
     suspend fun updateInRoom(note: Note) {
-        note.syncType = SyncType.update
-        noteDao.update(note)
+        if (note.syncType == SyncType.add) {
+            noteDao.update(note)
+        } else {
+            note.syncType = SyncType.update
+            noteDao.update(note)
+        }
     }
 
     suspend fun markDeletedInRoom(note: Note) {
