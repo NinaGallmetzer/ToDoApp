@@ -1,15 +1,8 @@
 package com.example.todoapp.data.utils
 
 import android.content.Context
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import com.example.todoapp.data.models.room.Note
-import com.example.todoapp.ui.viewmodels.InjectorUtils
-import com.example.todoapp.ui.viewmodels.notes.NotesViewModel
 import com.example.todoapp.workers.SyncWorker
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -31,14 +24,6 @@ class Common {
     fun startSyncWorker(context: Context) {
         val workRequest = OneTimeWorkRequest.Builder(SyncWorker::class.java).build()
         WorkManager.getInstance(context.applicationContext).enqueue(workRequest)
-    }
-
-    @Composable
-    fun noteIdToNote(noteId: String): Note {
-        val currentContext = LocalContext.current
-        val notesViewModel: NotesViewModel = viewModel(factory = InjectorUtils.provideNotesViewModelFactory(
-            context = currentContext))
-        return notesViewModel.getNoteById(noteId).collectAsState(Note()).value
     }
 
     fun saveLastSyncTimeNotes(context: Context) {
