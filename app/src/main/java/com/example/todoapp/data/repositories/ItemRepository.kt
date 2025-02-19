@@ -44,6 +44,7 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
     }
 
     suspend fun updateInRoom(item: Item) {
+        item.updatedAt = Common().getSupabaseTimeStamp()
         if (item.syncType == SyncType.add) {
             itemDao.update(item)
         } else {
@@ -76,7 +77,7 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
     }
 
     private suspend fun mergeItems(context: Context, roomItems: List<Item>, supabaseItems: List<SupabaseItem>): List<Item> {
-        val lastSync = Common().getLastSyncTime(context)
+        val lastSync = Common().getLastSyncTimeItems(context)
         Log.d("itemsSync", "lastSync: $lastSync")
         val roomItemsMap = roomItems
             .associateBy { it.itemId }
@@ -119,7 +120,6 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
                         }
                     }
                 }
-
                 roomItem != null -> {
                     val updateRoom = OffsetDateTime.parse(roomItem.updatedAt).toInstant()
                     if (updateRoom.isAfter(lastSync)) {
@@ -160,7 +160,7 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
             Log.d("itemsSync", "mergedItems: $itemsToSync")
             val syncTime = Common().getSupabaseTimeStamp()
             updateBothDatabases(itemsToSync, syncTime)
-            Common().saveLastSyncTime(context)
+            Common().saveLastSyncTimeItems(context)
         }
     }
 

@@ -69,7 +69,7 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
     }
 
     private suspend fun mergeNotes(context: Context, roomNotes: List<Note>, supabaseNotes: List<SupabaseNote>): List<Note> {
-        val lastSync = Common().getLastSyncTime(context)
+        val lastSync = Common().getLastSyncTimeNotes(context)
         Log.d("notesSync", "lastSync: $lastSync")
         val roomNotesMap = roomNotes
             .associateBy { it.noteId }
@@ -112,7 +112,6 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
                         }
                     }
                 }
-
                 roomNote != null -> {
                     val updateRoom = OffsetDateTime.parse(roomNote.updatedAt).toInstant()
                     if (updateRoom.isAfter(lastSync)) {
@@ -153,7 +152,7 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
             Log.d("notesSync", "mergedNotes: $notesToSync")
             val syncTime = Common().getSupabaseTimeStamp()
             updateBothDatabases(notesToSync, syncTime)
-            Common().saveLastSyncTime(context)
+            Common().saveLastSyncTimeNotes(context)
         }
     }
 

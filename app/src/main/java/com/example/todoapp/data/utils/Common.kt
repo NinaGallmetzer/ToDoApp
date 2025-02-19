@@ -28,25 +28,6 @@ class Common {
         return dateTimeFormat.format(calendar.time)
     }
 
-    fun saveLastFetchTime(context: Context) {
-        val sharedPref = context.getSharedPreferences("sync_prefs", Context.MODE_PRIVATE)
-        with(sharedPref.edit()) {
-            putString("last_fetch_time", getSupabaseTimeStamp()) // Save as string
-            apply()
-        }
-    }
-
-    fun getLastFetchTime(context: Context): Instant {
-        val sharedPref = context.getSharedPreferences("sync_prefs", Context.MODE_PRIVATE)
-        val lastSyncString = sharedPref.getString("last_fetch_time", null)
-
-        return if (lastSyncString != null) {
-            Instant.parse(lastSyncString) // Convert back to Instant
-        } else {
-            Instant.EPOCH // Default to 1970-01-01T00:00:00Z if no sync found
-        }
-    }
-
     fun startSyncWorker(context: Context) {
         val workRequest = OneTimeWorkRequest.Builder(SyncWorker::class.java).build()
         WorkManager.getInstance(context.applicationContext).enqueue(workRequest)
@@ -60,7 +41,26 @@ class Common {
         return notesViewModel.getNoteById(noteId).collectAsState(Note()).value
     }
 
-    fun saveLastSyncTime(context: Context) {
+    fun saveLastSyncTimeNotes(context: Context) {
+        val sharedPref = context.getSharedPreferences("sync_prefs", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putString("last_sync_time_notes", getSupabaseTimeStamp()) // Save as string
+            apply()
+        }
+    }
+
+    fun getLastSyncTimeNotes(context: Context): Instant {
+        val sharedPref = context.getSharedPreferences("sync_prefs", Context.MODE_PRIVATE)
+        val lastSyncString = sharedPref.getString("last_sync_time_notes", null)
+
+        return if (lastSyncString != null) {
+            Instant.parse(lastSyncString) // Convert back to Instant
+        } else {
+            Instant.EPOCH // Default to 1970-01-01T00:00:00Z if no sync found
+        }
+    }
+
+    fun saveLastSyncTimeItems(context: Context) {
         val sharedPref = context.getSharedPreferences("sync_prefs", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
             putString("last_sync_time", getSupabaseTimeStamp()) // Save as string
@@ -68,7 +68,7 @@ class Common {
         }
     }
 
-    fun getLastSyncTime(context: Context): Instant {
+    fun getLastSyncTimeItems(context: Context): Instant {
         val sharedPref = context.getSharedPreferences("sync_prefs", Context.MODE_PRIVATE)
         val lastSyncString = sharedPref.getString("last_sync_time", null)
 
