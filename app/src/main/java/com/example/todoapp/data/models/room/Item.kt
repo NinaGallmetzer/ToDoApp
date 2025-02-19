@@ -24,6 +24,7 @@ data class Item (
     var title: String = "",
     var checked: Boolean = false,
     var createdAt: String = Common().getSupabaseTimeStamp(),
+    var updatedAt: String = Common().getSupabaseTimeStamp(),
     var syncedAt: String? = null,
     var syncType: SyncType = SyncType.add,
 ) {
@@ -33,6 +34,7 @@ data class Item (
         title = title,
         checked = checked,
         created_at = createdAt,
+        updated_at = updatedAt,
         synced_at = syncedAt
     )
 }

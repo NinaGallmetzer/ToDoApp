@@ -11,6 +11,7 @@ data class SupabaseItem(
     val title: String,
     val checked: Boolean,
     val created_at: String,
+    var updated_at: String,
     val synced_at: String?
 ) {
     fun toRoomItem(syncType: SyncType): Item = Item(
@@ -19,6 +20,7 @@ data class SupabaseItem(
         title = title,
         checked = checked,
         createdAt = created_at,
+        updatedAt = updated_at,
         syncedAt = synced_at,
         syncType = syncType
     )
