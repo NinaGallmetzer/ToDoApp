@@ -2,7 +2,6 @@ package com.example.todoapp.data.models.supabase
 
 import com.example.todoapp.data.models.enums.SyncType
 import com.example.todoapp.data.models.room.Note
-import com.example.todoapp.data.utils.Common
 import kotlinx.serialization.Serializable
 
 @Serializable

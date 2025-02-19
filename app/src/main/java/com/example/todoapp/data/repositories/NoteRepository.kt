@@ -90,13 +90,25 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
                 roomNote != null && supabaseNote != null -> {
                     val updateRoom = OffsetDateTime.parse(roomNote.updatedAt).toInstant()
                     val updateSupabase = OffsetDateTime.parse(supabaseNote.updatedAt).toInstant()
-                    if (updateRoom.isBefore(updateSupabase) || updateSupabase.isAfter(lastSync)) {
-                        supabaseNote
-                    } else {
-                        if (roomNote.syncType != SyncType.synced) {
-                            roomNote
+                    if (updateRoom.isAfter(lastSync)) {
+                        if (updateSupabase.isAfter(lastSync)) {
+                            if (updateRoom.isAfter(updateSupabase)) {
+                                roomNote
+                            } else {
+                                supabaseNote
+                            }
                         } else {
-                            null
+                            roomNote
+                        }
+                    } else { // if updateRoom isBefore
+                        if (updateSupabase.isAfter(lastSync)) {
+                            supabaseNote
+                        } else {
+                            if (updateSupabase.isAfter(updateSupabase)) {
+                                roomNote
+                            } else {
+                                supabaseNote
+                            }
                         }
                     }
                 }
