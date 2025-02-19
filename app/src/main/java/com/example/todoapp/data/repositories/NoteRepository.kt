@@ -63,7 +63,7 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
         return notes
     }
 
-    private fun fetchNotesRoom(): List<Note> {
+    private suspend fun fetchNotesRoom(): List<Note> {
         val notes = noteDao.getAllNotesAsList()
         return notes
     }

@@ -71,7 +71,7 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
         return items
     }
 
-    private fun fetchItemsRoom(): List<Item> {
+    private suspend fun fetchItemsRoom(): List<Item> {
         val items = itemDao.getAllItemsAsList()
         return items
     }
