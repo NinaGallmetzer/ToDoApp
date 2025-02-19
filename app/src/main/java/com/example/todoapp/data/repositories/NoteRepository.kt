@@ -114,8 +114,8 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
                 }
 
                 roomNote != null -> {
-                    val changeDate = OffsetDateTime.parse(roomNote.updatedAt).toInstant()
-                    if (changeDate.isAfter(lastSync)) {
+                    val updateRoom = OffsetDateTime.parse(roomNote.updatedAt).toInstant()
+                    if (updateRoom.isAfter(lastSync)) {
                         if (roomNote.syncType == SyncType.add) {
                             roomNote
                         } else if (roomNote.syncType == SyncType.update) {
