@@ -31,6 +31,9 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
     fun getItemById(itemId: String): Flow<Item> {
         return itemDao.getItemById(itemId)
     }
+    suspend fun getCheckedItemsOfNote(noteId: String): List<Item> {
+        return itemDao.getCheckedItemsOfNote(noteId)
+    }
 
     suspend fun addToRoom(item: Item) {
         item.syncType = SyncType.add
@@ -50,6 +53,12 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
         item.syncType = SyncType.delete
         itemDao.update(item)
     }
+    suspend fun markCheckedAsDeleteInRoom(noteId: String) {
+        val checkedItems = getCheckedItemsOfNote(noteId)
+        checkedItems.forEach { item ->
+            markDeletedInRoom(item)
+        }
+    }
 
     private suspend fun fetchUnsyncedItemsSupabase(context: Context): List<SupabaseItem> {
         val lastFetch = Common().getLastFetchTime(context)
@@ -67,7 +76,7 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
         return items
     }
 
-    private suspend fun fetchUnsyncedItemsRoom(): List<Item> {
+    private suspend fun getUnsyncedItemsRoom(): List<Item> {
         return itemDao.getUnsyncedItems()
     }
 
@@ -109,7 +118,7 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
     suspend fun syncItems(context: Context) {
         if (networkChecker.isConnected()) {
             val supabaseItems = fetchUnsyncedItemsSupabase(context)
-            val roomItems = fetchUnsyncedItemsRoom()
+            val roomItems = getUnsyncedItemsRoom()
             val itemsToSync = mergeItems(roomItems, supabaseItems)
             val syncTime = Common().getSupabaseTimeStamp()
             updateBothDatabases(itemsToSync, syncTime)
