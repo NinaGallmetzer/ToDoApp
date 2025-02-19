@@ -51,12 +51,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.todoapp.R
 import com.example.todoapp.data.models.room.Item
-import com.example.todoapp.data.utils.Common
 import com.example.todoapp.supabase
 import com.example.todoapp.ui.navigation.Screens
 import com.example.todoapp.ui.screens.general.CommonAddFAB
 import com.example.todoapp.ui.screens.general.noteIdToNote
 import com.example.todoapp.ui.screens.general.showDialog
+import com.example.todoapp.ui.screens.general.startSyncWorker
 import com.example.todoapp.ui.viewmodels.InjectorUtils
 import com.example.todoapp.ui.viewmodels.items.ItemsViewModel
 import io.github.jan.supabase.auth.auth
@@ -145,7 +145,7 @@ fun ItemsAppBar(
                 DropdownMenuItem(onClick = {
                     optionsState = false
                     coroutineScope.launch {
-                        Common().startSyncWorker(currentContext)
+                        startSyncWorker(currentContext)
                     }
                 }) {
                     Icon(imageVector = Icons.Default.Sync, contentDescription = stringResource(R.string.add_note))

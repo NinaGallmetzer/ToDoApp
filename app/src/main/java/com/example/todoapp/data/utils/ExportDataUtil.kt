@@ -42,7 +42,7 @@ class ExportDataUtil(var context: Context, db: String) {
     private fun saveCsvToDownloads(tableName: String) {
         val resolver = context.contentResolver
         val contentValues = ContentValues().apply {
-            put(MediaStore.Downloads.DISPLAY_NAME,  "${tableName}_${Common().getFileTimeStamp()}.csv")
+            put(MediaStore.Downloads.DISPLAY_NAME,  "${tableName}_${TimeStampUtil().getFileTimeStamp()}.csv")
             put(MediaStore.Downloads.MIME_TYPE, "text/csv")
             put(MediaStore.Downloads.IS_PENDING, 1) // Mark file as pending (Android 10+)
         }

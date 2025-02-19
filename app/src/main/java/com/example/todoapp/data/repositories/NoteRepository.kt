@@ -6,7 +6,7 @@ import com.example.todoapp.data.daos.NoteDao
 import com.example.todoapp.data.models.enums.SyncType
 import com.example.todoapp.data.models.room.Note
 import com.example.todoapp.data.models.supabase.SupabaseNote
-import com.example.todoapp.data.utils.Common
+import com.example.todoapp.data.utils.TimeStampUtil
 import com.example.todoapp.supabase
 import com.example.todoapp.workers.NetworkChecker
 import io.github.jan.supabase.postgrest.from
@@ -35,13 +35,13 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
     }
 
     suspend fun addToRoom(note: Note) {
-        note.updatedAt = Common().getSupabaseTimeStamp()
+        note.updatedAt = TimeStampUtil().getSupabaseTimeStamp()
         note.syncType = SyncType.add
         noteDao.add(note)
     }
 
     suspend fun updateInRoom(note: Note) {
-        note.updatedAt = Common().getSupabaseTimeStamp()
+        note.updatedAt = TimeStampUtil().getSupabaseTimeStamp()
         // notes marked add = unsynced with supabase > keep syncType = add
         if (note.syncType == SyncType.add) {
             noteDao.update(note)
@@ -52,7 +52,7 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
     }
 
     suspend fun markDeletedInRoom(note: Note) {
-        note.updatedAt = Common().getSupabaseTimeStamp()
+        note.updatedAt = TimeStampUtil().getSupabaseTimeStamp()
         note.syncType = SyncType.delete
         noteDao.update(note)
     }
@@ -69,7 +69,7 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
     }
 
     private suspend fun mergeNotes(context: Context, roomNotes: List<Note>, supabaseNotes: List<SupabaseNote>): List<Note> {
-        val lastSync = Common().getLastSyncTimeNotes(context)
+        val lastSync = TimeStampUtil().getLastSyncTimeNotes(context)
         Log.d("notesSync", "lastSync: $lastSync")
         val roomNotesMap = roomNotes
             .associateBy { it.noteId }
@@ -150,9 +150,9 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
             Log.d("notesSync", "roomNotes: $roomNotes")
             val notesToSync = mergeNotes(context, roomNotes, supabaseNotes)
             Log.d("notesSync", "mergedNotes: $notesToSync")
-            val syncTime = Common().getSupabaseTimeStamp()
+            val syncTime = TimeStampUtil().getSupabaseTimeStamp()
             updateBothDatabases(notesToSync, syncTime)
-            Common().saveLastSyncTimeNotes(context)
+            TimeStampUtil().saveLastSyncTimeNotes(context)
         }
     }
 

@@ -6,7 +6,7 @@ import com.example.todoapp.data.daos.ItemDao
 import com.example.todoapp.data.models.enums.SyncType
 import com.example.todoapp.data.models.room.Item
 import com.example.todoapp.data.models.supabase.SupabaseItem
-import com.example.todoapp.data.utils.Common
+import com.example.todoapp.data.utils.TimeStampUtil
 import com.example.todoapp.supabase
 import com.example.todoapp.workers.NetworkChecker
 import io.github.jan.supabase.postgrest.from
@@ -38,13 +38,13 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
     }
 
     suspend fun addToRoom(item: Item) {
-        item.updatedAt = Common().getSupabaseTimeStamp()
+        item.updatedAt = TimeStampUtil().getSupabaseTimeStamp()
         item.syncType = SyncType.add
         itemDao.add(item)
     }
 
     suspend fun updateInRoom(item: Item) {
-        item.updatedAt = Common().getSupabaseTimeStamp()
+        item.updatedAt = TimeStampUtil().getSupabaseTimeStamp()
         if (item.syncType == SyncType.add) {
             itemDao.update(item)
         } else {
@@ -54,7 +54,7 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
     }
 
     suspend fun markDeletedInRoom(item: Item) {
-        item.updatedAt = Common().getSupabaseTimeStamp()
+        item.updatedAt = TimeStampUtil().getSupabaseTimeStamp()
         item.syncType = SyncType.delete
         itemDao.update(item)
     }
@@ -77,7 +77,7 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
     }
 
     private suspend fun mergeItems(context: Context, roomItems: List<Item>, supabaseItems: List<SupabaseItem>): List<Item> {
-        val lastSync = Common().getLastSyncTimeItems(context)
+        val lastSync = TimeStampUtil().getLastSyncTimeItems(context)
         Log.d("itemsSync", "lastSync: $lastSync")
         val roomItemsMap = roomItems
             .associateBy { it.itemId }
@@ -158,9 +158,9 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
             Log.d("itemsSync", "roomItems: $roomItems")
             val itemsToSync = mergeItems(context, roomItems, supabaseItems)
             Log.d("itemsSync", "mergedItems: $itemsToSync")
-            val syncTime = Common().getSupabaseTimeStamp()
+            val syncTime = TimeStampUtil().getSupabaseTimeStamp()
             updateBothDatabases(itemsToSync, syncTime)
-            Common().saveLastSyncTimeItems(context)
+            TimeStampUtil().saveLastSyncTimeItems(context)
         }
     }
 

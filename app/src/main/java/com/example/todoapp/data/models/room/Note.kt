@@ -5,7 +5,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.todoapp.data.models.enums.SyncType
 import com.example.todoapp.data.models.supabase.SupabaseNote
-import com.example.todoapp.data.utils.Common
+import com.example.todoapp.data.utils.TimeStampUtil
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
@@ -18,8 +18,8 @@ data class Note (
     val noteId: String = UUID.randomUUID().toString(),
     var title: String = "",
     var content: String? = null,
-    var createdAt: String = Common().getSupabaseTimeStamp(),
-    var updatedAt: String = Common().getSupabaseTimeStamp(),
+    var createdAt: String = TimeStampUtil().getSupabaseTimeStamp(),
+    var updatedAt: String = TimeStampUtil().getSupabaseTimeStamp(),
     var syncedAt: String? = null,
     var syncType: SyncType = SyncType.add,
 ) {

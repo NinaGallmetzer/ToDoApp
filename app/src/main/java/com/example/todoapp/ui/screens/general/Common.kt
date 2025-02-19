@@ -48,10 +48,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.example.todoapp.R
 import com.example.todoapp.data.models.room.Note
 import com.example.todoapp.ui.viewmodels.InjectorUtils
 import com.example.todoapp.ui.viewmodels.notes.NotesViewModel
+import com.example.todoapp.workers.SyncWorker
 
 @Composable
 fun CommonAppBar(
@@ -135,28 +138,6 @@ fun MainButton(
     }
 }
 
-fun showDialog(
-    context: Context,
-    title: String = "",
-    message: String = "",
-    positive: String = "",
-    negative: String = "",
-    onPositiveClick: () -> Unit,
-    onNegativeClick: () -> Unit
-) {
-    val dialogBuilder = android.app.AlertDialog.Builder(context)
-    dialogBuilder.setTitle(title)
-    dialogBuilder.setMessage(message)
-    dialogBuilder.setPositiveButton(positive) { _, _ ->
-        onPositiveClick()
-    }
-    dialogBuilder.setNegativeButton(negative) { _, _ ->
-        onNegativeClick()
-    }
-
-    dialogBuilder.create().show()
-}
-
 @Composable
 fun CustomOutlinedTextField(
     new: Boolean,
@@ -226,5 +207,32 @@ fun noteIdToNote(noteId: String): Note {
     val notesViewModel: NotesViewModel = viewModel(factory = InjectorUtils.provideNotesViewModelFactory(
         context = currentContext))
     return notesViewModel.getNoteById(noteId).collectAsState(Note()).value
+}
+
+fun showDialog(
+    context: Context,
+    title: String = "",
+    message: String = "",
+    positive: String = "",
+    negative: String = "",
+    onPositiveClick: () -> Unit,
+    onNegativeClick: () -> Unit
+) {
+    val dialogBuilder = android.app.AlertDialog.Builder(context)
+    dialogBuilder.setTitle(title)
+    dialogBuilder.setMessage(message)
+    dialogBuilder.setPositiveButton(positive) { _, _ ->
+        onPositiveClick()
+    }
+    dialogBuilder.setNegativeButton(negative) { _, _ ->
+        onNegativeClick()
+    }
+
+    dialogBuilder.create().show()
+}
+
+fun startSyncWorker(context: Context) {
+    val workRequest = OneTimeWorkRequest.Builder(SyncWorker::class.java).build()
+    WorkManager.getInstance(context.applicationContext).enqueue(workRequest)
 }
 

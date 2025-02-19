@@ -56,12 +56,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.todoapp.R
 import com.example.todoapp.data.models.room.Note
-import com.example.todoapp.data.utils.Common
 import com.example.todoapp.data.utils.ExportDataUtil
 import com.example.todoapp.supabase
 import com.example.todoapp.ui.navigation.Screens
 import com.example.todoapp.ui.screens.general.CommonAddFAB
 import com.example.todoapp.ui.screens.general.showDialog
+import com.example.todoapp.ui.screens.general.startSyncWorker
 import com.example.todoapp.ui.viewmodels.InjectorUtils
 import com.example.todoapp.ui.viewmodels.notes.NotesViewModel
 import io.github.jan.supabase.auth.auth
@@ -138,7 +138,7 @@ fun NotesAppBar(
                 DropdownMenuItem(onClick = {
                     optionsState = false
                     coroutineScope.launch {
-                      Common().startSyncWorker(currentContext)
+                        startSyncWorker(currentContext)
                         // TODO show result as Toast
                     }
                 }) {

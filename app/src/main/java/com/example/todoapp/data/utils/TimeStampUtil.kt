@@ -1,15 +1,12 @@
 package com.example.todoapp.data.utils
 
 import android.content.Context
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import com.example.todoapp.workers.SyncWorker
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.Calendar
 import java.util.Locale
 
-class Common {
+class TimeStampUtil {
 
     fun getSupabaseTimeStamp(): String {
         return Instant.now().toString()
@@ -19,11 +16,6 @@ class Common {
         val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault())
         val calendar = Calendar.getInstance()
         return dateTimeFormat.format(calendar.time)
-    }
-
-    fun startSyncWorker(context: Context) {
-        val workRequest = OneTimeWorkRequest.Builder(SyncWorker::class.java).build()
-        WorkManager.getInstance(context.applicationContext).enqueue(workRequest)
     }
 
     fun saveLastSyncTimeNotes(context: Context) {
