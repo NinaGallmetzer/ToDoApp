@@ -19,6 +19,7 @@ data class Note (
     var title: String = "",
     var content: String? = null,
     var createdAt: String = Common().getSupabaseTimeStamp(),
+    var updatedAt: String = Common().getSupabaseTimeStamp(),
     var syncedAt: String? = null,
     var syncType: SyncType = SyncType.add,
 ) {
@@ -27,6 +28,7 @@ data class Note (
         title = title,
         content = content,
         created_at = createdAt,
+        updated_at = updatedAt,
         synced_at = syncedAt
     )
 }

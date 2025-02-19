@@ -2,6 +2,7 @@ package com.example.todoapp.data.models.supabase
 
 import com.example.todoapp.data.models.enums.SyncType
 import com.example.todoapp.data.models.room.Note
+import com.example.todoapp.data.utils.Common
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -10,6 +11,7 @@ data class SupabaseNote(
     val title: String,
     val content: String?,
     val created_at: String,
+    var updated_at: String,
     val synced_at: String?
 ) {
     fun toRoomNote(syncType: SyncType): Note = Note(
@@ -17,6 +19,7 @@ data class SupabaseNote(
         title = title,
         content = content,
         createdAt = created_at,
+        updatedAt = updated_at,
         syncedAt = synced_at,
         syncType = syncType
     )

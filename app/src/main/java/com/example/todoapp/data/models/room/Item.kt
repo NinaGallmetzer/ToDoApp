@@ -12,7 +12,7 @@ import java.util.UUID
 
 @Serializable
 @Entity(
-    indices = [Index(value = ["title"])],
+    indices = [Index(value = ["noteId"])],
     foreignKeys = [
         ForeignKey(entity = Note::class, parentColumns = ["noteId"], childColumns = ["noteId"],
             onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE)]
