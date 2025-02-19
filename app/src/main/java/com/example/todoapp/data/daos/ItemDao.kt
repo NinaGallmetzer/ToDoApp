@@ -31,6 +31,6 @@ interface ItemDao {
     suspend fun getCheckedItemsOfNote(noteId: String): List<Item>
 
     @Query("SELECT * FROM Item")
-    fun getAllItemsAsList(): List<Item>
+    suspend fun getAllItemsAsList(): List<Item>
 
 }
