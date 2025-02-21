@@ -2,7 +2,6 @@ package com.example.todoapp.ui.screens.notes
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -15,17 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
@@ -35,6 +25,13 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -73,7 +70,7 @@ fun NotesScreen(
     exportDataUtil: ExportDataUtil
 ) {
     Box {
-        val image = R.drawable.background_portraint
+        val image = R.drawable.gradient_portrait
 
         Image(
             painter = painterResource(image),
@@ -107,73 +104,77 @@ fun NotesAppBar(
     val coroutineScope = rememberCoroutineScope()
 
     Row(modifier = Modifier
-        .background(MaterialTheme.colors.background)
         .fillMaxWidth()
         .padding(horizontal = 10.dp, vertical = 15.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ){
         var optionsState by remember { mutableStateOf(false) }
 
-        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Return", tint = MaterialTheme.colors.onBackground,
+        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Return", tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.clickable(onClick = {
                 navController.popBackStack()
             }),
         )
-        Text(text = title, style = MaterialTheme.typography.h6, color = MaterialTheme.colors.onBackground)
+        Text(text = title, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onBackground)
         Column {
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = "Settings",
-                tint = MaterialTheme.colors.onBackground,
+                tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.clickable(onClick = {
                     optionsState = !optionsState
                 }),
             )
             DropdownMenu(
                 expanded = optionsState,
-                onDismissRequest = {
-                    optionsState = false
-                },
+                onDismissRequest = { optionsState = false },
             ) {
-                DropdownMenuItem(onClick = {
-                    optionsState = false
-                    coroutineScope.launch {
-                        startSyncWorker(currentContext)
-                        // TODO show result as Toast
-                    }
-                }) {
-                    Icon(imageVector = Icons.Default.Sync, contentDescription = stringResource(R.string.add_note))
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text("Sync")
-                }
-                DropdownMenuItem(onClick = {
-                    optionsState = false
-                    coroutineScope.launch {
-                        exportDataUtil.exportTables()
-                    }
-                }) {
-                    Icon(imageVector = Icons.Default.Download, contentDescription = stringResource(R.string.add_note))
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text("Download")
-                }
-                DropdownMenuItem(onClick = {
-                    optionsState = false
-                    coroutineScope.launch {
-                        try {
-                            supabase.auth.clearSession()
-                            navController.navigate(Screens.Login.route) {
-                                popUpTo(Screens.Login.route) { inclusive = true } // Remove all screens up to and including the specified destination from the back stack
-                                launchSingleTop = true // Ensure the new screen is launched as a single instance, and any other instance of the same screen is removed
-                            }
-                        } catch (e: Exception) {
-                            Toast.makeText(currentContext, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                DropdownMenuItem(
+                    leadingIcon = { Icon(imageVector = Icons.Default.Sync, contentDescription = stringResource(R.string.add_note)) },
+                    text = { Text("Sync") },
+                    onClick = {
+                        optionsState = false
+                        coroutineScope.launch {
+                            startSyncWorker(currentContext)
+                            // TODO show result as Toast
                         }
-                    }
-                }) {
-                    Icon(imageVector = Icons.AutoMirrored.Filled.Logout, contentDescription = stringResource(R.string.add_note))
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text("LogOut")
-                }
+                    },
+                )
+                DropdownMenuItem(
+                    leadingIcon = { Icon(imageVector = Icons.Default.Download, contentDescription = stringResource(R.string.add_note)) },
+                    text = { Text("Download") },
+                    onClick = {
+                        optionsState = false
+                        coroutineScope.launch {
+                            exportDataUtil.exportTables()
+                        }
+                    },
+                )
+                DropdownMenuItem(
+                    leadingIcon = { Icon(imageVector = Icons.AutoMirrored.Filled.Logout, contentDescription = stringResource(R.string.add_note)) },
+                    text = { Text("LogOut") },
+                    onClick = {
+                        optionsState = false
+                        coroutineScope.launch {
+                            try {
+                                supabase.auth.clearSession()
+                                navController.navigate(Screens.Login.route) {
+                                    popUpTo(Screens.Login.route) {
+                                        inclusive = true
+                                    } // Remove all screens up to and including the specified destination from the back stack
+                                    launchSingleTop =
+                                        true // Ensure the new screen is launched as a single instance, and any other instance of the same screen is removed
+                                }
+                            } catch (e: Exception) {
+                                Toast.makeText(
+                                    currentContext,
+                                    "Error: ${e.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    },
+                )
             }
         }
     }
@@ -214,18 +215,11 @@ fun NotesList(
             TextField(
                 value = searchText,
                 onValueChange = { searchText = it },
-                label = { Text(stringResource(id = R.string.search)) },
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    textColor = MaterialTheme.colors.onSurface,
-                    focusedBorderColor = MaterialTheme.colors.background,
-                    unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
-                    focusedLabelColor = MaterialTheme.colors.background,
-                    unfocusedLabelColor = MaterialTheme.colors.background,
-                    cursorColor = MaterialTheme.colors.background
+                label = { Text(stringResource(id = R.string.search))},
+                modifier = Modifier
+                    .height(60.dp)
+                    .fillMaxWidth(),
                 )
-            )
-
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -233,7 +227,8 @@ fun NotesList(
             ) {
                 items(filteredNotes) { note ->
                     NoteRow(
-                        note,
+                        navController = navController,
+                        note = note,
                         onItemClick = {
                             coroutineScope.launch {
                                 navController.navigate(Screens.Items.createRoute(noteId = note.noteId))
@@ -270,6 +265,7 @@ fun NotesList(
 
 @Composable
 fun NoteRow(
+    navController: NavController,
     note: Note = Note(),
     onItemClick: (Note) -> Unit = {},
     onItemLongClick: (Note) -> Unit = {},
@@ -287,7 +283,7 @@ fun NoteRow(
                 onLongPress = { onItemLongClick(note) }
             )
         },
-        shape = MaterialTheme.shapes.small,
+        shape = MaterialTheme.shapes.large,
     ) {
         Column (modifier = Modifier
             .padding(5.dp),
@@ -300,8 +296,8 @@ fun NoteRow(
                     .padding(10.dp)
                 ) {
                     Text(text = note.title,
-                        style = MaterialTheme.typography.h5,
-                        color = MaterialTheme.colors.onSurface)
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.onSurface)
                 }
 
                 Box(modifier = Modifier
@@ -311,7 +307,7 @@ fun NoteRow(
                 ) {
                     Column {
                         Icon(
-                            tint = MaterialTheme.colors.onBackground,
+                            tint = MaterialTheme.colorScheme.onSurface,
                             imageVector = Icons.Default.Delete,
                             contentDescription = stringResource(id = R.string.delete_note),
                             modifier = Modifier
@@ -339,21 +335,31 @@ fun NoteRow(
             }
 
             if(expandedState){
-                Details(note)
+                Details(navController, note)
             }
         }
     }
 }
 
 @Composable
-fun Details(note: Note = Note()) {
+fun Details(
+    navController: NavController,
+    note: Note = Note(),
+) {
     val noteDescriptionStyle = TextStyle(
-        fontSize = MaterialTheme.typography.subtitle2.fontSize,
-        color = MaterialTheme.colors.onSurface,
+        fontSize = MaterialTheme.typography.titleSmall.fontSize,
+        color = MaterialTheme.colorScheme.onSurface,
         fontWeight = FontWeight.Normal,
     )
+    val coroutineScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
+            .clickable {
+                coroutineScope.launch {
+                    navController.navigate(Screens.NotesAddEdit.createRoute(noteId = note.noteId))
+                }
+            }
             .padding(10.dp)
     ) {
         Spacer(modifier = Modifier.size(10.dp))

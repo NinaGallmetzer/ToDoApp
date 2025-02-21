@@ -11,10 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,7 +48,7 @@ fun NotesAddEditScreen(
     var saveButtonState by remember { mutableStateOf(false) }
 
     Box {
-        val image = R.drawable.background_portraint
+        val image = R.drawable.gradient_portrait
         Image(
             painter = painterResource(image),
             contentDescription = null,
@@ -66,7 +65,7 @@ fun NotesAddEditScreen(
             Box (modifier = Modifier
                 .padding(10.dp)
                 .background(
-                    color = MaterialTheme.colors.surface,
+                    color = MaterialTheme.colorScheme.surface,
                     shape = MaterialTheme.shapes.large
                 ),
             ) {
@@ -118,9 +117,9 @@ fun NotesAddEditScreen(
                             .fillMaxWidth()
                             .height(60.dp),
                         shape = MaterialTheme.shapes.medium,
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = MaterialTheme.colors.background,
-                            contentColor = MaterialTheme.colors.onBackground
+                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.background,
+                            contentColor = MaterialTheme.colorScheme.onBackground
                         ),
                         onClick = {
                             coroutineScope.launch {
@@ -130,8 +129,8 @@ fun NotesAddEditScreen(
                         }) {
                         Text(
                             text = "Save",
-                            style = MaterialTheme.typography.button.copy(fontSize = 18.sp),
-                            color = MaterialTheme.colors.onBackground
+                            style = MaterialTheme.typography.labelLarge.copy(fontSize = 18.sp),
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 }

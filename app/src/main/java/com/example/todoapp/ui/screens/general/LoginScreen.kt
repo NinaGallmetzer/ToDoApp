@@ -2,22 +2,23 @@ package com.example.todoapp.ui.screens.general
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +27,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -40,7 +42,6 @@ import androidx.navigation.NavController
 import com.example.todoapp.R
 import com.example.todoapp.supabase
 import com.example.todoapp.ui.navigation.Screens
-import com.example.todoapp.ui.theme.Shapes
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import kotlinx.coroutines.CoroutineScope
@@ -62,7 +63,7 @@ fun LoginScreen(
             .fillMaxSize()
     ) {
         Image(
-            painter = painterResource(R.drawable.background_portraint),
+            painter = painterResource(R.drawable.gradient_portrait),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
@@ -76,58 +77,44 @@ fun LoginScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            OutlinedTextField(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(15.dp),
+            TextField(
                 value = email,
                 onValueChange = { email = it },
                 label = { Text(text = stringResource(R.string.email)) },
                 textStyle = TextStyle(fontSize = 18.sp),
-                shape = Shapes.medium,
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    textColor = MaterialTheme.colors.onBackground,
-                    focusedBorderColor = MaterialTheme.colors.background,
-                    unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
-                    focusedLabelColor = MaterialTheme.colors.background,
-                    unfocusedLabelColor = MaterialTheme.colors.background,
-                    cursorColor = MaterialTheme.colors.background
-                ),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            )
-            OutlinedTextField(
+                shape = MaterialTheme.shapes.large,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(15.dp),
+                    .padding(15.dp)
+                    .height(60.dp)
+                    .fillMaxWidth()
+                    .shadow(elevation = 16.dp, shape = MaterialTheme.shapes.large)
+                    .border(width = 0.5.dp, shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.onSurface),
+                )
+            TextField(
                 value = password,
-                onValueChange = { newText ->
-                    password = newText
-                },
-                label = {
-                    Text(text = stringResource(R.string.password))
-                },
-                textStyle = TextStyle(fontSize = 18.sp),
-                shape = Shapes.medium,
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    textColor = MaterialTheme.colors.onBackground,
-                    focusedBorderColor = MaterialTheme.colors.background,
-                    unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
-                    focusedLabelColor = MaterialTheme.colors.background,
-                    unfocusedLabelColor = MaterialTheme.colors.background,
-                    cursorColor = MaterialTheme.colors.background
-                ),
+                onValueChange = { password = it },
+                label = {Text(text = stringResource(R.string.password))},
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(15.dp)
+                    .height(60.dp)
+                    .fillMaxWidth()
+                    .shadow(elevation = 16.dp, shape = MaterialTheme.shapes.large)
+                    .border(width = 0.5.dp, shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.onSurface),
+                shape = MaterialTheme.shapes.large,
                 visualTransformation = if (showPassword) {
                     VisualTransformation.None
                 } else {
                     PasswordVisualTransformation()
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 trailingIcon = {
                     if (showPassword) {
                         IconButton(onClick = { showPassword = false }) {
                             Icon(
                                 imageVector = Icons.Filled.Visibility,
-                                tint = MaterialTheme.colors.background,
+                                tint = MaterialTheme.colorScheme.background,
                                 contentDescription = "hide_password"
                             )
                         }
@@ -136,16 +123,17 @@ fun LoginScreen(
                             onClick = { showPassword = true }) {
                             Icon(
                                 imageVector = Icons.Filled.VisibilityOff,
-                                tint = MaterialTheme.colors.background,
+                                tint = MaterialTheme.colorScheme.background,
                                 contentDescription = "show_password"
                             )
                         }
                     }
                 }
             )
-
             MainButton(
                 text = stringResource(id = R.string.log_in),
+                modifier = Modifier
+                    .padding(top = 32.dp)
             ){
                 coroutineScope.launch {
                     try {

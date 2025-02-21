@@ -33,7 +33,7 @@ fun StartScreen(
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
     val image = if (isPortrait) {
-        R.drawable.background_portraint
+        R.drawable.gradient_portrait
     } else {
         R.drawable.background_landscape
     }

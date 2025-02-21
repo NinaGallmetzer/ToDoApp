@@ -1,19 +1,20 @@
 package com.example.todoapp.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-private val LightColorPalette = lightColors(
+private val LightColorPalette = lightColorScheme(
     surface = White,
     onSurface = Black,
-    background = Blue200,
-    onBackground = Black
+    background = Green,
+    onBackground = White,
+    secondary = Yellow
 )
 
-private val DarkColorPalette = darkColors(
+private val DarkColorPalette = darkColorScheme(
     surface = Blue700,
     onSurface = White,
     background = Blue500,
@@ -30,7 +31,7 @@ fun ToDoAppTheme(content: @Composable () -> Unit) {
     }
 
     MaterialTheme(
-        colors = colors,
+        colorScheme = colors,
         typography = Typography,
         shapes = Shapes,
         content = content

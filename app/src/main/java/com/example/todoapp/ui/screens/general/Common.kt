@@ -2,6 +2,7 @@ package com.example.todoapp.ui.screens.general
 
 import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,17 +17,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,12 +38,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -65,14 +67,14 @@ fun CommonAppBar(
         .fillMaxWidth(),
     ) {
         Row(modifier = Modifier
-            .background(MaterialTheme.colors.background)
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 10.dp, vertical = 15.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Return",
-                tint = MaterialTheme.colors.onBackground,
+                tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .clickable(onClick = {
@@ -85,8 +87,8 @@ fun CommonAppBar(
                     .align(Alignment.CenterVertically),
                 textAlign = TextAlign.Center,
                 text = title,
-                style = MaterialTheme.typography.h6,
-                color = MaterialTheme.colors.onBackground
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
     }
@@ -94,27 +96,27 @@ fun CommonAppBar(
 
 @Composable
 fun MainButton(
-    modifier: Modifier = Modifier,
     text: String,
     icon: ImageVector? = null,
-    backgroundColor: Color = MaterialTheme.colors.background,
-    contentColor: Color = MaterialTheme.colors.onBackground,
-
-    shape: RoundedCornerShape = RoundedCornerShape(24),
-    padding: PaddingValues = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
-    textStyle: TextStyle = MaterialTheme.typography.button.copy(fontWeight = FontWeight.Bold),
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = MaterialTheme.colorScheme.background,
+    contentColor: Color = MaterialTheme.colorScheme.onBackground,
+    shape: RoundedCornerShape = RoundedCornerShape(32.dp),
+    padding: PaddingValues = PaddingValues(horizontal = 32.dp, vertical = 16.dp),
+    textStyle: TextStyle = MaterialTheme.typography.titleMedium,
     onClick: () -> Unit,
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier
+            .shadow(elevation = 16.dp, shape = shape)
+            .border(width = 0.5.dp, shape = shape, color = MaterialTheme.colorScheme.onSurface),
         shape = shape,
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = backgroundColor,
+            containerColor = backgroundColor,
             contentColor = contentColor
         ),
         contentPadding = padding,
-        elevation = ButtonDefaults.elevation(defaultElevation = 8.dp, pressedElevation = 16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -176,12 +178,63 @@ fun CustomOutlinedTextField(
             modifier = Modifier.fillMaxWidth().fillMaxHeight(),
             textStyle = TextStyle(fontSize = 18.sp),
             shape = MaterialTheme.shapes.medium,
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.background,
-                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
-                focusedLabelColor = MaterialTheme.colors.background,
-                unfocusedLabelColor = MaterialTheme.colors.background,
-                cursorColor = MaterialTheme.colors.background
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                focusedIndicatorColor = MaterialTheme.colorScheme.background,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                focusedLabelColor = MaterialTheme.colorScheme.background,
+                unfocusedLabelColor = MaterialTheme.colorScheme.background,
+                cursorColor = MaterialTheme.colorScheme.background
+            )
+        )
+    }
+}
+
+@Composable
+fun CustomTextField(
+    new: Boolean,
+    startValue: Any?,
+    modifier: Modifier,
+    textValue: String?,
+    textLabel: String,
+    keyboardType: KeyboardType,
+    onValueChange: (String) -> Unit
+) {
+    var value by remember { mutableStateOf<Any?>(null) }
+
+    LaunchedEffect(startValue) {
+        value = startValue
+    }
+
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        TextField(
+            value =
+            if (new) {
+                if (value == null) "" else (textValue ?: "")
+            } else {
+                textValue ?: ""
+            },
+            onValueChange = {
+                value = it
+                onValueChange(it)
+            },
+            label = {
+                Text(text = textLabel)
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+            modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+            textStyle = TextStyle(fontSize = 18.sp),
+            shape = MaterialTheme.shapes.medium,
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                focusedIndicatorColor = MaterialTheme.colorScheme.background,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                focusedLabelColor = MaterialTheme.colorScheme.background,
+                unfocusedLabelColor = MaterialTheme.colorScheme.background,
+                cursorColor = MaterialTheme.colorScheme.background
             )
         )
     }

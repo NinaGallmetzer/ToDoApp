@@ -9,28 +9,26 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -68,7 +66,7 @@ fun ItemsScreen(
     noteId: String
 ) {
     Box {
-        val image = R.drawable.background_portraint
+        val image = R.drawable.gradient_portrait
         val currentContext = LocalContext.current
         val coroutineScope = rememberCoroutineScope()
         val itemsViewModel: ItemsViewModel = viewModel(factory = InjectorUtils.provideItemsViewModelFactory(context = currentContext, noteId = noteId))
@@ -114,24 +112,24 @@ fun ItemsAppBar(
     val cancel = stringResource(id = R.string.cancel)
 
     Row(modifier = Modifier
-        .background(MaterialTheme.colors.background)
+        .background(MaterialTheme.colorScheme.background)
         .fillMaxWidth()
         .padding(horizontal = 10.dp, vertical = 15.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ){
         var optionsState by remember { mutableStateOf(false) }
-        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Return", tint = MaterialTheme.colors.onBackground,
+        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Return", tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.clickable(onClick = {
                 navController.popBackStack()
             }),
         )
         val currentNoteTitle = noteIdToNote(noteId).title
-        Text(text = currentNoteTitle, style = MaterialTheme.typography.h6, color = MaterialTheme.colors.onBackground)
+        Text(text = currentNoteTitle, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onBackground)
         Column {
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = "Settings",
-                tint = MaterialTheme.colors.onBackground,
+                tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.clickable(onClick = {
                     optionsState = !optionsState
                 }),
@@ -142,56 +140,63 @@ fun ItemsAppBar(
                     optionsState = false
                 },
             ) {
-                DropdownMenuItem(onClick = {
-                    optionsState = false
-                    coroutineScope.launch {
-                        startSyncWorker(currentContext)
-                    }
-                }) {
-                    Icon(imageVector = Icons.Default.Sync, contentDescription = stringResource(R.string.add_note))
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text("Sync")
-                }
-                DropdownMenuItem(onClick = {
-                    optionsState = false
-                    coroutineScope.launch {
-                        showDialog(
-                            context = currentContext,
-                            title = title,
-                            message = message,
-                            positive = confirm,
-                            negative = cancel,
-                            onPositiveClick = {
-                                coroutineScope.launch {
-                                    itemsViewModel.markCheckedDeletedInRoom(noteId)
-                                }
-                            },
-                            onNegativeClick = {}
-                        )
-                    }
-                }) {
-                    Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(R.string.add_note))
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text("Delete Checked Items")
-                }
-                DropdownMenuItem(onClick = {
-                    optionsState = false
-                    coroutineScope.launch {
-                        try {
-                            supabase.auth.clearSession()
-                            navController.navigate(Screens.Login.route) {
-                                popUpTo(Screens.Login.route) { inclusive = true } // Remove all screens up to and including the specified destination from the back stack
-                                launchSingleTop = true // Ensure the new screen is launched as a single instance, and any other instance of the same screen is removed
-                            }
-                        } catch (e: Exception) {
-                            Toast.makeText(currentContext, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                DropdownMenuItem(
+                    leadingIcon = { Icon(imageVector = Icons.Default.Sync, contentDescription = stringResource(R.string.add_note)) },
+                    text = { Text("sync") },
+                    onClick = {
+                        optionsState = false
+                        coroutineScope.launch {
+                            startSyncWorker(currentContext)
                         }
-                    }
-                }) {
-                    Icon(imageVector = Icons.AutoMirrored.Filled.Logout, contentDescription = stringResource(R.string.add_note))
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text("LogOut")
-                }
+                    },
+                )
+                DropdownMenuItem(
+                    leadingIcon = { Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(R.string.add_note)) },
+                    text = { Text("Delete Checked Items") },
+                    onClick = {
+                        optionsState = false
+                        coroutineScope.launch {
+                            showDialog(
+                                context = currentContext,
+                                title = title,
+                                message = message,
+                                positive = confirm,
+                                negative = cancel,
+                                onPositiveClick = {
+                                    coroutineScope.launch {
+                                        itemsViewModel.markCheckedDeletedInRoom(noteId)
+                                    }
+                                },
+                                onNegativeClick = {}
+                            )
+                        }
+                    },
+                )
+                DropdownMenuItem(
+                    text = { Text("LogOut") },
+                    leadingIcon = { Icon(imageVector = Icons.AutoMirrored.Filled.Logout, contentDescription = stringResource(R.string.add_note)) },
+                    onClick = {
+                        optionsState = false
+                        coroutineScope.launch {
+                            try {
+                                supabase.auth.clearSession()
+                                navController.navigate(Screens.Login.route) {
+                                    popUpTo(Screens.Login.route) {
+                                        inclusive = true
+                                    } // Remove all screens up to and including the specified destination from the back stack
+                                    launchSingleTop =
+                                        true // Ensure the new screen is launched as a single instance, and any other instance of the same screen is removed
+                                }
+                            } catch (e: Exception) {
+                                Toast.makeText(
+                                    currentContext,
+                                    "Error: ${e.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    },
+                )
             }
         }
     }
@@ -234,13 +239,13 @@ fun ItemsList(
                 onValueChange = { searchText = it },
                 label = { Text(stringResource(id = R.string.search)) },
                 modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    textColor = MaterialTheme.colors.onSurface,
-                    focusedBorderColor = MaterialTheme.colors.background,
-                    unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
-                    focusedLabelColor = MaterialTheme.colors.background,
-                    unfocusedLabelColor = MaterialTheme.colors.background,
-                    cursorColor = MaterialTheme.colors.background
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.background,
+                    unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                    focusedLabelColor = MaterialTheme.colorScheme.background,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.background,
+                    cursorColor = MaterialTheme.colorScheme.background
                 )
             )
             // items
@@ -305,7 +310,7 @@ fun ItemRow(
                 onTap = {
                     isChecked = !isChecked
                     onItemTap(item)
-                        },
+                },
                 onLongPress = { onItemLongClick(item) }
             )
         },
@@ -321,17 +326,17 @@ fun ItemRow(
             ) {
                 Text(text = item.title,
                     style = if (isChecked) {
-                        MaterialTheme.typography.h5.copy(textDecoration = TextDecoration.LineThrough)
+                        MaterialTheme.typography.headlineSmall.copy(textDecoration = TextDecoration.LineThrough)
                     } else {
-                        MaterialTheme.typography.h5
+                        MaterialTheme.typography.headlineSmall
                     },
-                    color = MaterialTheme.colors.onSurface)
+                    color = MaterialTheme.colorScheme.onSurface)
                 Box(modifier = Modifier
                     .fillMaxSize(),
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Icon(
-                        tint = MaterialTheme.colors.onBackground,
+                        tint = MaterialTheme.colorScheme.onBackground,
                         imageVector = Icons.Default.Delete,
                         contentDescription = stringResource(id = R.string.delete_item),
                         modifier = Modifier
