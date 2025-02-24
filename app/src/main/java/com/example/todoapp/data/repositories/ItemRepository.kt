@@ -1,29 +1,25 @@
 package com.example.todoapp.data.repositories
 
-import android.content.Context
-import android.util.Log
 import com.example.todoapp.data.daos.ItemDao
 import com.example.todoapp.data.models.enums.SyncType
 import com.example.todoapp.data.models.room.Item
 import com.example.todoapp.data.models.supabase.SupabaseItem
 import com.example.todoapp.data.utils.TimeStampUtil
 import com.example.todoapp.supabase
-import com.example.todoapp.workers.NetworkChecker
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.Flow
+import java.time.Instant
 import java.time.OffsetDateTime
 
-class ItemRepository(private val itemDao: ItemDao, context: Context) {
-
-    private val networkChecker = NetworkChecker(context)
+class ItemRepository(private val itemDao: ItemDao) {
 
     companion object {
         // For Singleton instantiation
         @Volatile private var instance: ItemRepository? = null
 
-        fun getInstance(dao: ItemDao, context: Context) =
+        fun getInstance(dao: ItemDao) =
             instance ?: synchronized(this) {
-                instance ?: ItemRepository(dao, context = context).also { instance = it }
+                instance ?: ItemRepository(dao).also { instance = it }
             }
     }
 
@@ -65,20 +61,22 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
         }
     }
 
-    private suspend fun fetchItemsSupabase(): List<SupabaseItem> {
+    suspend fun fetchSupabaseItems(): List<SupabaseItem> {
         val items = supabase.from("item").select()
             .decodeList<SupabaseItem>()
         return items
     }
 
-    private suspend fun fetchItemsRoom(): List<Item> {
+    suspend fun fetchRoomItems(): List<Item> {
         val items = itemDao.getAllItemsAsList()
         return items
     }
 
-    private suspend fun mergeItems(context: Context, roomItems: List<Item>, supabaseItems: List<SupabaseItem>): List<Item> {
-        val lastSync = TimeStampUtil().getLastSyncTimeItems(context)
-        Log.d("itemsSync", "lastSync: $lastSync")
+    suspend fun mergeItems(
+        roomItems: List<Item>,
+        supabaseItems: List<SupabaseItem>,
+        lastSyncTime: Instant
+    ): List<Item> {
         val roomItemsMap = roomItems
             .associateBy { it.itemId }
         val supabaseItemsMap = supabaseItems
@@ -98,8 +96,8 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
                 roomItem != null && supabaseItem != null -> {
                     val updateRoom = OffsetDateTime.parse(roomItem.updatedAt).toInstant()
                     val updateSupabase = OffsetDateTime.parse(supabaseItem.updatedAt).toInstant()
-                    if (updateRoom.isAfter(lastSync)) {
-                        if (updateSupabase.isAfter(lastSync)) {
+                    if (updateRoom.isAfter(lastSyncTime)) {
+                        if (updateSupabase.isAfter(lastSyncTime)) {
                             if (updateRoom.isAfter(updateSupabase)) {
                                 roomItem
                             } else {
@@ -109,7 +107,7 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
                             roomItem
                         }
                     } else { // if updateRoom isBefore
-                        if (updateSupabase.isAfter(lastSync)) {
+                        if (updateSupabase.isAfter(lastSyncTime)) {
                             supabaseItem
                         } else {
                             if (updateSupabase.isAfter(updateSupabase)) {
@@ -122,7 +120,7 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
                 }
                 roomItem != null -> {
                     val updateRoom = OffsetDateTime.parse(roomItem.updatedAt).toInstant()
-                    if (updateRoom.isAfter(lastSync)) {
+                    if (updateRoom.isAfter(lastSyncTime)) {
                         if (roomItem.syncType == SyncType.add) {
                             roomItem
                         } else if (roomItem.syncType == SyncType.update) {
@@ -149,42 +147,27 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
         return mergedItems
     }
 
-    suspend fun syncItems(context: Context) {
-        if (networkChecker.isConnected()) {
-            Log.d("itemsSync","starting Sync")
-            val supabaseItems = fetchItemsSupabase()
-            Log.d("itemsSync", "supabaseItems: $supabaseItems")
-            val roomItems = fetchItemsRoom()
-            Log.d("itemsSync", "roomItems: $roomItems")
-            val itemsToSync = mergeItems(context, roomItems, supabaseItems)
-            Log.d("itemsSync", "mergedItems: $itemsToSync")
-            val syncTime = TimeStampUtil().getSupabaseTimeStamp()
-            updateBothDatabases(itemsToSync, syncTime)
-            TimeStampUtil().saveLastSyncTimeItems(context)
-        }
-    }
-
-    private suspend fun updateBothDatabases(itemsToSync: List<Item>, syncTime: String) {
+    suspend fun updateBothDatabases(itemsToSync: List<Item>, newSyncTime: String) {
         itemsToSync.forEach { itemToSync ->
             when (itemToSync.syncType) {
-                SyncType.add -> addToSupabaseAndUpdateInRoom(itemToSync, syncTime)
-                SyncType.update -> updateInSupabaseAndRoom(itemToSync, syncTime)
+                SyncType.add -> addToSupabaseAndUpdateInRoom(itemToSync, newSyncTime)
+                SyncType.update -> updateInSupabaseAndRoom(itemToSync, newSyncTime)
                 SyncType.delete -> deleteFromSupabaseAndRoom(itemToSync)
                 SyncType.synced -> {}
-                SyncType.newFromSupabase -> addFromSupabaseToRoom(itemToSync, syncTime)
+                SyncType.newFromSupabase -> addFromSupabaseToRoom(itemToSync, newSyncTime)
             }
         }
     }
 
-    private suspend fun addToSupabaseAndUpdateInRoom(item: Item, syncTime: String) {
-        item.syncedAt = syncTime
+    private suspend fun addToSupabaseAndUpdateInRoom(item: Item, newSyncTime: String) {
+        item.syncedAt = newSyncTime
         item.syncType = SyncType.synced
-        itemDao.update(item)
         supabase.from("item").insert(item.toSupabaseItem())
+        itemDao.update(item)
     }
 
-    private suspend fun updateInSupabaseAndRoom(item: Item, syncTime: String) {
-        item.syncedAt = syncTime
+    private suspend fun updateInSupabaseAndRoom(item: Item, newSyncTime: String) {
+        item.syncedAt = newSyncTime
         item.syncType = SyncType.synced
         supabase.from("item").update(
             {
@@ -211,10 +194,9 @@ class ItemRepository(private val itemDao: ItemDao, context: Context) {
         itemDao.delete(item)
     }
 
-    private suspend fun addFromSupabaseToRoom(item: Item, syncTime: String) {
-        item.syncedAt = syncTime
+    private suspend fun addFromSupabaseToRoom(item: Item, newSyncTime: String) {
+        item.syncedAt = newSyncTime
         item.syncType = SyncType.synced
         itemDao.add(item)
-
     }
 }

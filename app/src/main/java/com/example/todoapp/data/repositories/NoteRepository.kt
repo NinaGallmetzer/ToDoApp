@@ -1,29 +1,25 @@
 package com.example.todoapp.data.repositories
 
-import android.content.Context
-import android.util.Log
 import com.example.todoapp.data.daos.NoteDao
 import com.example.todoapp.data.models.enums.SyncType
 import com.example.todoapp.data.models.room.Note
 import com.example.todoapp.data.models.supabase.SupabaseNote
 import com.example.todoapp.data.utils.TimeStampUtil
 import com.example.todoapp.supabase
-import com.example.todoapp.workers.NetworkChecker
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.Flow
+import java.time.Instant
 import java.time.OffsetDateTime
 
-class NoteRepository(private val noteDao: NoteDao, context: Context) {
-
-    private val networkChecker = NetworkChecker(context)
+class NoteRepository(private val noteDao: NoteDao) {
 
     companion object {
         // For Singleton instantiation
         @Volatile private var instance: NoteRepository? = null
 
-        fun getInstance(dao: NoteDao, context: Context) =
+        fun getInstance(dao: NoteDao) =
             instance ?: synchronized(this) {
-                instance ?: NoteRepository(dao, context = context).also { instance = it }
+                instance ?: NoteRepository(dao).also { instance = it }
             }
     }
 
@@ -57,20 +53,22 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
         noteDao.update(note)
     }
 
-    private suspend fun fetchNotesSupabase(): List<SupabaseNote> {
+    suspend fun fetchSupabaseNotes(): List<SupabaseNote> {
         val notes = supabase.from("note").select()
             .decodeList<SupabaseNote>()
         return notes
     }
 
-    private suspend fun fetchNotesRoom(): List<Note> {
+    suspend fun fetchRoomNotes(): List<Note> {
         val notes = noteDao.getAllNotesAsList()
         return notes
     }
 
-    private suspend fun mergeNotes(context: Context, roomNotes: List<Note>, supabaseNotes: List<SupabaseNote>): List<Note> {
-        val lastSync = TimeStampUtil().getLastSyncTimeNotes(context)
-        Log.d("notesSync", "lastSync: $lastSync")
+    suspend fun mergeNotes(
+        roomNotes: List<Note>,
+        supabaseNotes: List<SupabaseNote>,
+        lastSyncTime: Instant,
+    ): List<Note> {
         val roomNotesMap = roomNotes
             .associateBy { it.noteId }
         val supabaseNotesMap = supabaseNotes
@@ -90,8 +88,8 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
                 roomNote != null && supabaseNote != null -> {
                     val updateRoom = OffsetDateTime.parse(roomNote.updatedAt).toInstant()
                     val updateSupabase = OffsetDateTime.parse(supabaseNote.updatedAt).toInstant()
-                    if (updateRoom.isAfter(lastSync)) {
-                        if (updateSupabase.isAfter(lastSync)) {
+                    if (updateRoom.isAfter(lastSyncTime)) {
+                        if (updateSupabase.isAfter(lastSyncTime)) {
                             if (updateRoom.isAfter(updateSupabase)) {
                                 roomNote
                             } else {
@@ -100,8 +98,8 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
                         } else {
                             roomNote
                         }
-                    } else { // if updateRoom isBefore
-                        if (updateSupabase.isAfter(lastSync)) {
+                    } else { // if updateRoom isBefore or equal
+                        if (updateSupabase.isAfter(lastSyncTime)) {
                             supabaseNote
                         } else {
                             if (updateSupabase.isAfter(updateSupabase)) {
@@ -114,7 +112,7 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
                 }
                 roomNote != null -> {
                     val updateRoom = OffsetDateTime.parse(roomNote.updatedAt).toInstant()
-                    if (updateRoom.isAfter(lastSync)) {
+                    if (updateRoom.isAfter(lastSyncTime)) {
                         if (roomNote.syncType == SyncType.add) {
                             roomNote
                         } else if (roomNote.syncType == SyncType.update) {
@@ -141,42 +139,27 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
         return mergedNotes
     }
 
-    suspend fun syncNotes(context: Context) {
-        if (networkChecker.isConnected()) {
-            Log.d("notesSync","starting Sync")
-            val supabaseNotes = fetchNotesSupabase()
-            Log.d("notesSync", "supabaseNotes: $supabaseNotes")
-            val roomNotes = fetchNotesRoom()
-            Log.d("notesSync", "roomNotes: $roomNotes")
-            val notesToSync = mergeNotes(context, roomNotes, supabaseNotes)
-            Log.d("notesSync", "mergedNotes: $notesToSync")
-            val syncTime = TimeStampUtil().getSupabaseTimeStamp()
-            updateBothDatabases(notesToSync, syncTime)
-            TimeStampUtil().saveLastSyncTimeNotes(context)
-        }
-    }
-
-    private suspend fun updateBothDatabases(notesToSync: List<Note>, syncTime: String) {
+    suspend fun updateBothDatabases(notesToSync: List<Note>, newSyncTime: String) {
         notesToSync.forEach { noteToSync ->
             when (noteToSync.syncType) {
-                SyncType.add -> addToSupabaseAndUpdateInRoom(noteToSync, syncTime)
-                SyncType.update -> updateInSupabaseAndRoom(noteToSync, syncTime)
+                SyncType.add -> addToSupabaseAndUpdateInRoom(noteToSync, newSyncTime)
+                SyncType.update -> updateInSupabaseAndRoom(noteToSync, newSyncTime)
                 SyncType.delete -> deleteFromSupabaseAndRoom(noteToSync)
                 SyncType.synced -> {}
-                SyncType.newFromSupabase -> addFromSupabaseToRoom(noteToSync, syncTime)
+                SyncType.newFromSupabase -> addFromSupabaseToRoom(noteToSync, newSyncTime)
             }
         }
     }
 
-    private suspend fun addToSupabaseAndUpdateInRoom(note: Note, syncTime: String) {
-        note.syncedAt = syncTime
+    private suspend fun addToSupabaseAndUpdateInRoom(note: Note, newSyncTime: String) {
+        note.syncedAt = newSyncTime
         note.syncType = SyncType.synced
-        noteDao.update(note)
         supabase.from("note").insert(note.toSupabaseNote())
+        noteDao.update(note)
     }
 
-    private suspend fun updateInSupabaseAndRoom(note: Note, syncTime: String) {
-        note.syncedAt = syncTime
+    private suspend fun updateInSupabaseAndRoom(note: Note, newSyncTime: String) {
+        note.syncedAt = newSyncTime
         note.syncType = SyncType.synced
         supabase.from("note").update(
             {
@@ -203,8 +186,8 @@ class NoteRepository(private val noteDao: NoteDao, context: Context) {
         noteDao.delete(note)
     }
 
-    private suspend fun addFromSupabaseToRoom(note: Note, syncTime: String) {
-        note.syncedAt = syncTime
+    private suspend fun addFromSupabaseToRoom(note: Note, newSyncTime: String) {
+        note.syncedAt = newSyncTime
         note.syncType = SyncType.synced
         noteDao.add(note)
     }

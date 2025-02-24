@@ -11,7 +11,8 @@ import com.example.todoapp.ui.viewmodels.notes.NotesViewModelFactory
 object InjectorUtils {
     private fun getNoteRepository(context: Context): NoteRepository {
         return NoteRepository.getInstance(
-            ToDoDatabase.getDatabase(context.applicationContext).noteDao(), context.applicationContext)
+            ToDoDatabase.getDatabase(context.applicationContext).noteDao()
+        )
     }
     fun provideNotesViewModelFactory(context: Context): NotesViewModelFactory {
         val repository = getNoteRepository(context)
@@ -24,7 +25,8 @@ object InjectorUtils {
 
     private fun getItemRepository(context: Context): ItemRepository {
         return ItemRepository.getInstance(
-            ToDoDatabase.getDatabase(context.applicationContext).itemDao(), context.applicationContext)
+            ToDoDatabase.getDatabase(context.applicationContext).itemDao()
+        )
     }
     fun provideItemsViewModelFactory(context: Context, noteId: String): ItemsViewModelFactory {
         val repository = getItemRepository(context)

@@ -18,17 +18,9 @@ class TimeStampUtil {
         return dateTimeFormat.format(calendar.time)
     }
 
-    fun saveLastSyncTimeNotes(context: Context) {
+    fun getLastSyncTime(context: Context): Instant {
         val sharedPref = context.getSharedPreferences("sync_prefs", Context.MODE_PRIVATE)
-        with(sharedPref.edit()) {
-            putString("last_sync_time_notes", getSupabaseTimeStamp()) // Save as string
-            apply()
-        }
-    }
-
-    fun getLastSyncTimeNotes(context: Context): Instant {
-        val sharedPref = context.getSharedPreferences("sync_prefs", Context.MODE_PRIVATE)
-        val lastSyncString = sharedPref.getString("last_sync_time_notes", null)
+        val lastSyncString = sharedPref.getString("sync_time_stamp", null)
 
         return if (lastSyncString != null) {
             Instant.parse(lastSyncString) // Convert back to Instant
@@ -37,24 +29,12 @@ class TimeStampUtil {
         }
     }
 
-    fun saveLastSyncTimeItems(context: Context) {
+    fun saveNewSyncTime(context: Context, thisSync: String) {
         val sharedPref = context.getSharedPreferences("sync_prefs", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
-            putString("last_sync_time", getSupabaseTimeStamp()) // Save as string
+            putString("sync_time_stamp", thisSync) // Save as string
             apply()
         }
     }
-
-    fun getLastSyncTimeItems(context: Context): Instant {
-        val sharedPref = context.getSharedPreferences("sync_prefs", Context.MODE_PRIVATE)
-        val lastSyncString = sharedPref.getString("last_sync_time", null)
-
-        return if (lastSyncString != null) {
-            Instant.parse(lastSyncString) // Convert back to Instant
-        } else {
-            Instant.EPOCH // Default to 1970-01-01T00:00:00Z if no sync found
-        }
-    }
-
 
 }

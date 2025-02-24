@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.example.todoapp.R
@@ -99,8 +100,8 @@ fun MainButton(
     text: String,
     icon: ImageVector? = null,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colorScheme.background,
-    contentColor: Color = MaterialTheme.colorScheme.onBackground,
+    backgroundColor: Color = MaterialTheme.colorScheme.tertiary,
+    contentColor: Color = MaterialTheme.colorScheme.onTertiary,
     shape: RoundedCornerShape = RoundedCornerShape(32.dp),
     padding: PaddingValues = PaddingValues(horizontal = 32.dp, vertical = 16.dp),
     textStyle: TextStyle = MaterialTheme.typography.titleMedium,
@@ -286,6 +287,8 @@ fun showDialog(
 
 fun startSyncWorker(context: Context) {
     val workRequest = OneTimeWorkRequest.Builder(SyncWorker::class.java).build()
-    WorkManager.getInstance(context.applicationContext).enqueue(workRequest)
+
+    WorkManager.getInstance(context.applicationContext)
+        .enqueueUniqueWork("UniqueSyncWorker", ExistingWorkPolicy.KEEP, workRequest)
 }
 

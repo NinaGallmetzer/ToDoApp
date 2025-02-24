@@ -6,8 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NoteDao {
-    @Query("SELECT * FROM Note ORDER BY title ASC")
-    fun getAllNotes(): Flow<List<Note>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(note: Note)
@@ -20,6 +18,9 @@ interface NoteDao {
 
     @Query("SELECT * FROM Note WHERE noteId=:noteId")
     fun getNoteById(noteId: String): Flow<Note>
+
+    @Query("SELECT * FROM Note ORDER BY title ASC")
+    fun getAllNotes(): Flow<List<Note>>
 
     @Query("SELECT * FROM Note")
     suspend fun getAllNotesAsList(): List<Note>
