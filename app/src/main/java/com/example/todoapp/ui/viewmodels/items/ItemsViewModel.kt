@@ -23,8 +23,10 @@ class ItemsViewModel(private val itemRepository: ItemRepository, private val not
         }
     }
 
-    suspend fun addToRoom(item: Item) {
-        itemRepository.addToRoom(item)
+    fun addToRoom(item: Item) {
+        viewModelScope.launch {
+            itemRepository.addToRoom(item)
+        }
     }
 
     fun updateInRoom(item: Item) {

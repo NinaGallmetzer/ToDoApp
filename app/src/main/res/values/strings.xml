@@ -157,7 +157,7 @@
     <string name="delete_all_notes_message">Are you sure you want to delete ALL notes?</string>
     <string name="delete_this_note_message">Are you sure you want to delete this note?</string>
     <string name="delete_all_items_title">Delete items</string>
-    <string name="delete_all_items_message">Are you sure you want to delete ALL items?</string>
+    <string name="delete_all_checked_items_message">Are you sure you want to delete ALL checked items?</string>
     <string name="delete_this_item_message">Are you sure you want to delete this item?</string>
     <string name="delete_all_ringing_sessions_title">Delete ringing sessions</string>
     <string name="delete_all_ringing_sessions_message">Are you sure you want to delete ALL ringing sessions?</string>

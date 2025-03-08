@@ -20,6 +20,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -75,7 +76,7 @@ fun CommonAppBar(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Return",
-                tint = MaterialTheme.colorScheme.onBackground,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .clickable(onClick = {
@@ -89,7 +90,7 @@ fun CommonAppBar(
                 textAlign = TextAlign.Center,
                 text = title,
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.primary
             )
         }
     }
@@ -179,14 +180,6 @@ fun CustomOutlinedTextField(
             modifier = Modifier.fillMaxWidth().fillMaxHeight(),
             textStyle = TextStyle(fontSize = 18.sp),
             shape = MaterialTheme.shapes.medium,
-            colors = TextFieldDefaults.colors(
-                focusedTextColor = MaterialTheme.colorScheme.onBackground,
-                focusedIndicatorColor = MaterialTheme.colorScheme.background,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-                focusedLabelColor = MaterialTheme.colorScheme.background,
-                unfocusedLabelColor = MaterialTheme.colorScheme.background,
-                cursorColor = MaterialTheme.colorScheme.background
-            )
         )
     }
 }
@@ -242,6 +235,70 @@ fun CustomTextField(
 }
 
 @Composable
+fun CustomChoiceDialog(
+    dialogTitle: String,
+    message: String,
+    confirmText: String,
+    dismissText: String,
+    onConfirmClick: () -> Unit,
+    onDismissClick: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismissClick,
+        title = { Text(dialogTitle) },
+        text = { Text(message) },
+        confirmButton = {
+            Button(onClick = onConfirmClick) {
+                Text(confirmText)
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismissClick) {
+                Text(dismissText)
+            }
+        }
+    )
+}
+
+@Composable
+fun CustomEditDialog(
+    dialogTitle: String,
+    text: String,
+    confirmText: String,
+    dismissText: String,
+    onConfirmClick: (String) -> Unit,
+    onDismissClick: () -> Unit,
+) {
+    var title by remember { mutableStateOf(text) }
+
+    AlertDialog(
+        onDismissRequest = onDismissClick,
+        title = { Text(dialogTitle) },
+        text = {
+            TextField(
+                value = title,
+                onValueChange = { title = it},
+                placeholder = { Text(stringResource(R.string.title)) }
+            )
+        },
+        confirmButton = {
+            Button(onClick = {
+                onConfirmClick(title)
+            }) {
+                Text(confirmText)
+            }
+        },
+        dismissButton = {
+            Button(onClick = {
+                onDismissClick()
+            }) {
+                Text(dismissText)
+            }
+        }
+    )
+}
+
+@Composable
 fun CommonAddFAB(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
@@ -261,28 +318,6 @@ fun noteIdToNote(noteId: String): Note {
     val notesViewModel: NotesViewModel = viewModel(factory = InjectorUtils.provideNotesViewModelFactory(
         context = currentContext))
     return notesViewModel.getNoteById(noteId).collectAsState(Note()).value
-}
-
-fun showDialog(
-    context: Context,
-    title: String = "",
-    message: String = "",
-    positive: String = "",
-    negative: String = "",
-    onPositiveClick: () -> Unit,
-    onNegativeClick: () -> Unit
-) {
-    val dialogBuilder = android.app.AlertDialog.Builder(context)
-    dialogBuilder.setTitle(title)
-    dialogBuilder.setMessage(message)
-    dialogBuilder.setPositiveButton(positive) { _, _ ->
-        onPositiveClick()
-    }
-    dialogBuilder.setNegativeButton(negative) { _, _ ->
-        onNegativeClick()
-    }
-
-    dialogBuilder.create().show()
 }
 
 fun startSyncWorker(context: Context) {

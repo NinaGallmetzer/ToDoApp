@@ -11,8 +11,8 @@ sealed class Screens(val route: String) {
         fun createRoute(noteId: String) = "itemsScreen/$noteId"
     }
 
-    object NotesAddEdit: Screens(route = "notesAddEditScreen/{noteId}") {
-        fun createRoute(noteId: String) = "notesAddEditScreen/$noteId"
+    object NoteAddEdit: Screens(route = "noteAddEditScreen/{noteId}") {
+        fun createRoute(noteId: String) = "noteAddEditScreen/$noteId"
     }
 
 }

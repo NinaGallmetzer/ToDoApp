@@ -5,7 +5,7 @@ import com.example.todoapp.data.ToDoDatabase
 import com.example.todoapp.data.repositories.ItemRepository
 import com.example.todoapp.data.repositories.NoteRepository
 import com.example.todoapp.ui.viewmodels.items.ItemsViewModelFactory
-import com.example.todoapp.ui.viewmodels.notes.NotesAddEditViewModelFactory
+import com.example.todoapp.ui.viewmodels.notes.NoteAddEditViewModelFactory
 import com.example.todoapp.ui.viewmodels.notes.NotesViewModelFactory
 
 object InjectorUtils {
@@ -18,9 +18,9 @@ object InjectorUtils {
         val repository = getNoteRepository(context)
         return NotesViewModelFactory(repository)
     }
-    fun provideNotesAddEditViewModelFactory(context: Context, noteId: String): NotesAddEditViewModelFactory {
+    fun provideNoteAddEditViewModelFactory(context: Context, noteId: String): NoteAddEditViewModelFactory {
         val repository = getNoteRepository(context)
-        return NotesAddEditViewModelFactory(repository, noteId)
+        return NoteAddEditViewModelFactory(repository, noteId)
     }
 
     private fun getItemRepository(context: Context): ItemRepository {

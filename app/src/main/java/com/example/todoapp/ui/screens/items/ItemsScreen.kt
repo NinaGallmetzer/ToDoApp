@@ -2,7 +2,6 @@ package com.example.todoapp.ui.screens.items
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -28,7 +27,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -52,8 +50,9 @@ import com.example.todoapp.data.models.room.Item
 import com.example.todoapp.supabase
 import com.example.todoapp.ui.navigation.Screens
 import com.example.todoapp.ui.screens.general.CommonAddFAB
+import com.example.todoapp.ui.screens.general.CustomChoiceDialog
+import com.example.todoapp.ui.screens.general.CustomEditDialog
 import com.example.todoapp.ui.screens.general.noteIdToNote
-import com.example.todoapp.ui.screens.general.showDialog
 import com.example.todoapp.ui.screens.general.startSyncWorker
 import com.example.todoapp.ui.viewmodels.InjectorUtils
 import com.example.todoapp.ui.viewmodels.items.ItemsViewModel
@@ -67,9 +66,8 @@ fun ItemsScreen(
 ) {
     Box {
         val image = R.drawable.gradient_portrait
-        val currentContext = LocalContext.current
-        val coroutineScope = rememberCoroutineScope()
-        val itemsViewModel: ItemsViewModel = viewModel(factory = InjectorUtils.provideItemsViewModelFactory(context = currentContext, noteId = noteId))
+        val itemsViewModel: ItemsViewModel = viewModel(factory = InjectorUtils.provideItemsViewModelFactory(LocalContext.current, noteId = noteId))
+        var showAddItemDialog by remember { mutableStateOf(false) }
 
         Image(
             painter = painterResource(image),
@@ -88,11 +86,20 @@ fun ItemsScreen(
                 .align(Alignment.BottomCenter)
                 .padding(16.dp),
         ) {
-            // TODO create new item (dialog? text field for title & button)
-            val newItem = Item(noteId = noteId, title = "item 001")
-            coroutineScope.launch {
-                itemsViewModel.addToRoom(newItem)
-            }
+            showAddItemDialog = true
+        }
+        if (showAddItemDialog) {
+            CustomEditDialog(
+                dialogTitle = "Add Item",
+                text = "",
+                confirmText = stringResource(id = R.string.save),
+                dismissText = stringResource(id = R.string.cancel),
+                onConfirmClick = {
+                    itemsViewModel.addToRoom(Item(noteId = noteId, title = it))
+                    showAddItemDialog = false
+                },
+                onDismissClick = { showAddItemDialog = false }
+            )
         }
     }
 }
@@ -106,24 +113,20 @@ fun ItemsAppBar(
     val coroutineScope = rememberCoroutineScope()
     val itemsViewModel: ItemsViewModel = viewModel(factory = InjectorUtils.provideItemsViewModelFactory(context = currentContext, noteId = noteId))
 
-    val title = "${ stringResource(id = R.string.delete) } ${ stringResource(id = R.string.item) }"
-    val message = stringResource(id = R.string.delete_all_items_message)
-    val confirm = stringResource(id = R.string.delete)
-    val cancel = stringResource(id = R.string.cancel)
-
     Row(modifier = Modifier
-        .background(MaterialTheme.colorScheme.background)
         .fillMaxWidth()
         .padding(horizontal = 10.dp, vertical = 15.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ){
-        var optionsState by remember { mutableStateOf(false) }
+        val currentNoteTitle = noteIdToNote(noteId).title
+        var showDropdownMenu by remember { mutableStateOf(false) }
+        var showDeleteCheckedItemsDialog by remember { mutableStateOf(false) }
+
         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Return", tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.clickable(onClick = {
                 navController.popBackStack()
             }),
         )
-        val currentNoteTitle = noteIdToNote(noteId).title
         Text(text = currentNoteTitle, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onBackground)
         Column {
             Icon(
@@ -131,20 +134,20 @@ fun ItemsAppBar(
                 contentDescription = "Settings",
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.clickable(onClick = {
-                    optionsState = !optionsState
+                    showDropdownMenu = !showDropdownMenu
                 }),
             )
             DropdownMenu(
-                expanded = optionsState,
+                expanded = showDropdownMenu,
                 onDismissRequest = {
-                    optionsState = false
+                    showDropdownMenu = false
                 },
             ) {
                 DropdownMenuItem(
                     leadingIcon = { Icon(imageVector = Icons.Default.Sync, contentDescription = stringResource(R.string.add_note)) },
                     text = { Text("sync") },
                     onClick = {
-                        optionsState = false
+                        showDropdownMenu = false
                         coroutineScope.launch {
                             startSyncWorker(currentContext)
                         }
@@ -154,29 +157,15 @@ fun ItemsAppBar(
                     leadingIcon = { Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(R.string.add_note)) },
                     text = { Text("Delete Checked Items") },
                     onClick = {
-                        optionsState = false
-                        coroutineScope.launch {
-                            showDialog(
-                                context = currentContext,
-                                title = title,
-                                message = message,
-                                positive = confirm,
-                                negative = cancel,
-                                onPositiveClick = {
-                                    coroutineScope.launch {
-                                        itemsViewModel.markCheckedDeletedInRoom(noteId)
-                                    }
-                                },
-                                onNegativeClick = {}
-                            )
-                        }
+                        showDropdownMenu = false
+                        showDeleteCheckedItemsDialog = true
                     },
                 )
                 DropdownMenuItem(
                     text = { Text("LogOut") },
                     leadingIcon = { Icon(imageVector = Icons.AutoMirrored.Filled.Logout, contentDescription = stringResource(R.string.add_note)) },
                     onClick = {
-                        optionsState = false
+                        showDropdownMenu = false
                         coroutineScope.launch {
                             try {
                                 supabase.auth.clearSession()
@@ -199,6 +188,23 @@ fun ItemsAppBar(
                 )
             }
         }
+        if (showDeleteCheckedItemsDialog) {
+            CustomChoiceDialog(
+                dialogTitle = "${ stringResource(id = R.string.delete) } ${ stringResource(id = R.string.items) }",
+                message = stringResource(id = R.string.delete_all_checked_items_message),
+                confirmText = stringResource(id = R.string.delete),
+                dismissText = stringResource(id = R.string.cancel),
+                onConfirmClick = {
+                    coroutineScope.launch {
+                        itemsViewModel.markCheckedDeletedInRoom(noteId)
+                    }
+                    showDeleteCheckedItemsDialog = false
+                },
+                onDismissClick = {
+                    showDeleteCheckedItemsDialog = false
+                }
+            )
+        }
     }
 }
 
@@ -208,15 +214,11 @@ fun ItemsList(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val currentContext = LocalContext.current
-
     val itemsViewModel: ItemsViewModel = viewModel(factory = InjectorUtils.provideItemsViewModelFactory(context = currentContext, noteId = noteId))
     val items by itemsViewModel.items.collectAsState()
     var searchText by remember { mutableStateOf("") }
-
-    val title = "${ stringResource(id = R.string.delete) } ${ stringResource(id = R.string.item) }"
-    val message = stringResource(id = R.string.delete_this_item_message)
-    val confirm = stringResource(id = R.string.delete)
-    val cancel = stringResource(id = R.string.cancel)
+    var itemToEdit by remember { mutableStateOf<Item?>(null) }
+    var itemToDelete by remember { mutableStateOf<Item?>(null) }
 
     val filteredItems =
         if (searchText.isNotBlank()) {
@@ -233,26 +235,17 @@ fun ItemsList(
             .clickable { searchText = "" } // Dismiss the dropdown menu when clicked outside
     ) {
         Column {
-            // searchfield
+            // search field
             TextField(
                 value = searchText,
                 onValueChange = { searchText = it },
                 label = { Text(stringResource(id = R.string.search)) },
                 modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.colors(
-                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    focusedIndicatorColor = MaterialTheme.colorScheme.background,
-                    unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-                    focusedLabelColor = MaterialTheme.colorScheme.background,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.background,
-                    cursorColor = MaterialTheme.colorScheme.background
-                )
             )
             // items
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(5.dp)
             ) {
                 items(filteredItems) { item ->
                     ItemRow(
@@ -264,29 +257,42 @@ fun ItemsList(
                             }
                         },
                         onItemLongClick = {
-                            coroutineScope.launch {
-                                // TODO edit item
-                            }
+                            itemToEdit = item
                         },
                         onDeleteClick = {
-                            coroutineScope.launch {
-                                showDialog(
-                                    context = currentContext,
-                                    title = title,
-                                    message = message,
-                                    positive = confirm,
-                                    negative = cancel,
-                                    onPositiveClick = {
-                                        coroutineScope.launch {
-                                            itemsViewModel.markDeletedInRoom(item)
-                                        }
-                                    },
-                                    onNegativeClick = {}
-                                )
-                            }
+                            itemToDelete = item
                         }
                     )
                 }
+            }
+            itemToEdit?.let { item ->
+                CustomEditDialog(
+                    dialogTitle = "Edit Item",
+                    text = item.title,
+                    confirmText = stringResource(id = R.string.save),
+                    dismissText = stringResource(id = R.string.cancel),
+                    onConfirmClick = {
+                        item.title = it
+                        itemsViewModel.updateInRoom(item)
+                        itemToEdit = null
+                    },
+                    onDismissClick = { itemToEdit = null },
+                )
+            }
+            itemToDelete?.let { item ->
+                CustomChoiceDialog(
+                    dialogTitle = "${ stringResource(id = R.string.delete) } ${ stringResource(id = R.string.item) }",
+                    message = stringResource(id = R.string.delete_this_item_message),
+                    confirmText = stringResource(id = R.string.delete),
+                    dismissText = stringResource(id = R.string.cancel),
+                    onConfirmClick = {
+                        coroutineScope.launch {
+                            itemsViewModel.markDeletedInRoom(item)
+                        }
+                        itemToDelete = null
+                    },
+                    onDismissClick = { itemToDelete = null }
+                )
             }
         }
     }
@@ -304,7 +310,7 @@ fun ItemRow(
 
     Card(modifier = Modifier
         .fillMaxWidth()
-        .padding(5.dp)
+        .padding(1.dp)
         .pointerInput(Unit) {
             detectTapGestures(
                 onTap = {
@@ -336,7 +342,7 @@ fun ItemRow(
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Icon(
-                        tint = MaterialTheme.colorScheme.onBackground,
+                        tint = MaterialTheme.colorScheme.primary,
                         imageVector = Icons.Default.Delete,
                         contentDescription = stringResource(id = R.string.delete_item),
                         modifier = Modifier
@@ -346,7 +352,6 @@ fun ItemRow(
                             }
                     )
                 }
-
             }
         }
     }

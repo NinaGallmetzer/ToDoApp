@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.todoapp.R
@@ -58,7 +57,7 @@ fun StartScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MainButton(
-                text = stringResource(id = R.string.log_in),
+                text = "Start",
             ){
                 coroutineScope.launch {
                     val userSession = supabase.auth.currentSessionOrNull()

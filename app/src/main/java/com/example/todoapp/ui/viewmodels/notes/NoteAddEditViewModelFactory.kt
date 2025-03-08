@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.todoapp.data.repositories.NoteRepository
 
-class NotesAddEditViewModelFactory(private val repository: NoteRepository, private val noteId: String): ViewModelProvider.Factory {
+class NoteAddEditViewModelFactory(private val repository: NoteRepository, private val noteId: String): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(NotesAddEditViewModel::class.java)){
-            return NotesAddEditViewModel(noteRepository = repository, noteId = noteId) as T
+        if(modelClass.isAssignableFrom(NoteAddEditViewModel::class.java)){
+            return NoteAddEditViewModel(noteRepository = repository, noteId = noteId) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

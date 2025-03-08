@@ -8,7 +8,7 @@ import com.example.todoapp.data.utils.ExportDataUtil
 import com.example.todoapp.ui.screens.general.LoginScreen
 import com.example.todoapp.ui.screens.general.StartScreen
 import com.example.todoapp.ui.screens.items.ItemsScreen
-import com.example.todoapp.ui.screens.notes.NotesAddEditScreen
+import com.example.todoapp.ui.screens.notes.NoteAddEditScreen
 import com.example.todoapp.ui.screens.notes.NotesScreen
 
 @Composable
@@ -28,9 +28,9 @@ fun SetupNavGraph(
         composable(route = Screens.Notes.route) {
             NotesScreen(navController = navController, exportDataUtil)
         }
-        composable(route = Screens.NotesAddEdit.route) { backStackEntry ->
+        composable(route = Screens.NoteAddEdit.route) { backStackEntry ->
             val noteId = requireNotNull(backStackEntry.arguments?.getString("noteId"))
-            NotesAddEditScreen(navController = navController, noteId = noteId)
+            NoteAddEditScreen(navController = navController, noteId = noteId)
         }
 
         composable(route = Screens.Items.route) { backStackEntry ->

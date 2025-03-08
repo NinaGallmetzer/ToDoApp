@@ -157,7 +157,7 @@
     <string name="delete_all_notes_message">Wirklich ALLE Stanorte löschen?</string>
     <string name="delete_this_note_message">Diesen Standort wirklich löschen?</string>
     <string name="delete_all_items_title">Itemze löschen</string>
-    <string name="delete_all_items_message">Wirklich ALLE Itemze löschen?</string>
+    <string name="delete_all_checked_items_message">Wirklich ALLE Itemze löschen?</string>
     <string name="delete_this_item_message">Dieses Itemz wirklich löschen?</string>
     <string name="delete_all_ringing_sessions_title">Beringungs-Sessions löschen</string>
     <string name="delete_all_ringing_sessions_message">Wirklich ALLE Beringungs-Sessions löschen?</string>

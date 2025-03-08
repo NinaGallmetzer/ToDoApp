@@ -35,15 +35,15 @@ import com.example.todoapp.ui.navigation.Screens
 import com.example.todoapp.ui.screens.general.CommonAppBar
 import com.example.todoapp.ui.screens.general.CustomOutlinedTextField
 import com.example.todoapp.ui.viewmodels.InjectorUtils
-import com.example.todoapp.ui.viewmodels.notes.NotesAddEditViewModel
+import com.example.todoapp.ui.viewmodels.notes.NoteAddEditViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun NotesAddEditScreen(
+fun NoteAddEditScreen(
     navController: NavController,
     noteId: String
 ) {
-    val notesAddEditViewModel: NotesAddEditViewModel = viewModel(factory = InjectorUtils.provideNotesAddEditViewModelFactory(LocalContext.current, noteId = noteId))
+    val noteAddEditViewModel: NoteAddEditViewModel = viewModel(factory = InjectorUtils.provideNoteAddEditViewModelFactory(LocalContext.current, noteId = noteId))
     val coroutineScope = rememberCoroutineScope()
     var saveButtonState by remember { mutableStateOf(false) }
 
@@ -65,7 +65,7 @@ fun NotesAddEditScreen(
             Box (modifier = Modifier
                 .padding(10.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.surface,
+                    color = MaterialTheme.colorScheme.inversePrimary,
                     shape = MaterialTheme.shapes.large
                 ),
             ) {
@@ -80,12 +80,12 @@ fun NotesAddEditScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(70.dp),
-                        textValue = notesAddEditViewModel.note.title,
+                        textValue = noteAddEditViewModel.note.title,
                         textLabel = stringResource(R.string.title) + " *",
                         keyboardType = KeyboardType.Text,
                         onValueChange = {
-                            notesAddEditViewModel.updateViewNote(
-                                notesAddEditViewModel.note.copy(
+                            noteAddEditViewModel.updateViewNote(
+                                noteAddEditViewModel.note.copy(
                                     title = it)
                             )
                         }
@@ -97,19 +97,19 @@ fun NotesAddEditScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(140.dp),
-                        textValue = notesAddEditViewModel.note.content,
+                        textValue = noteAddEditViewModel.note.content,
                         textLabel = stringResource(R.string.comment),
                         keyboardType = KeyboardType.Text,
                         onValueChange = {
-                            notesAddEditViewModel.updateViewNote(
-                                notesAddEditViewModel.note.copy(
+                            noteAddEditViewModel.updateViewNote(
+                                noteAddEditViewModel.note.copy(
                                     content = it
                                 )
                             )
                         }
                     )
 
-                    saveButtonState = notesAddEditViewModel.note.title.isNotBlank()
+                    saveButtonState = noteAddEditViewModel.note.title.isNotBlank()
 
                     Button(
                         enabled = saveButtonState,
@@ -123,14 +123,14 @@ fun NotesAddEditScreen(
                         ),
                         onClick = {
                             coroutineScope.launch {
-                                notesAddEditViewModel.saveNote()
+                                noteAddEditViewModel.saveNote()
                                 navController.navigate(Screens.Notes.route)
                             }
                         }) {
                         Text(
                             text = "Save",
                             style = MaterialTheme.typography.labelLarge.copy(fontSize = 18.sp),
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                 }

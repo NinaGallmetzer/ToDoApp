@@ -57,7 +57,7 @@ import com.example.todoapp.data.utils.ExportDataUtil
 import com.example.todoapp.supabase
 import com.example.todoapp.ui.navigation.Screens
 import com.example.todoapp.ui.screens.general.CommonAddFAB
-import com.example.todoapp.ui.screens.general.showDialog
+import com.example.todoapp.ui.screens.general.CustomChoiceDialog
 import com.example.todoapp.ui.screens.general.startSyncWorker
 import com.example.todoapp.ui.viewmodels.InjectorUtils
 import com.example.todoapp.ui.viewmodels.notes.NotesViewModel
@@ -89,7 +89,7 @@ fun NotesScreen(
                 .align(Alignment.BottomCenter)
                 .padding(16.dp)
         ) {
-            navController.navigate(Screens.NotesAddEdit.createRoute(noteId = ""))
+            navController.navigate(Screens.NoteAddEdit.createRoute(noteId = ""))
         }
     }
 }
@@ -127,7 +127,9 @@ fun NotesAppBar(
             )
             DropdownMenu(
                 expanded = optionsState,
-                onDismissRequest = { optionsState = false },
+                onDismissRequest = {
+                    optionsState = false
+                },
             ) {
                 DropdownMenuItem(
                     leadingIcon = { Icon(imageVector = Icons.Default.Sync, contentDescription = stringResource(R.string.add_note)) },
@@ -190,11 +192,7 @@ fun NotesList(
     val notesViewModel: NotesViewModel = viewModel(factory = InjectorUtils.provideNotesViewModelFactory(context = currentContext))
     val notes by notesViewModel.notes.collectAsState()
     var searchText by remember { mutableStateOf("") }
-
-    val title = "${ stringResource(id = R.string.delete) } ${ stringResource(id = R.string.note) }"
-    val message = stringResource(id = R.string.delete_this_note_message)
-    val confirm = stringResource(id = R.string.delete)
-    val cancel = stringResource(id = R.string.cancel)
+    var noteToDelete by remember { mutableStateOf<Note?>(null) }
 
     val filteredNotes =
         if (searchText.isNotBlank()) {
@@ -236,29 +234,30 @@ fun NotesList(
                         },
                         onItemLongClick = {
                             coroutineScope.launch {
-                                navController.navigate(Screens.NotesAddEdit.createRoute(noteId = note.noteId))
+                                navController.navigate(Screens.NoteAddEdit.createRoute(noteId = note.noteId))
                             }
                         },
                         onDeleteClick = {
-                            coroutineScope.launch {
-                                showDialog(
-                                    context = currentContext,
-                                    title = title,
-                                    message = message,
-                                    positive = confirm,
-                                    negative = cancel,
-                                    onPositiveClick = {
-                                        coroutineScope.launch {
-                                            notesViewModel.markDeletedInRoom(note)
-                                        }
-                                    },
-                                    onNegativeClick = {}
-                                )
-                            }
+                            noteToDelete = note
                         }
                     )
                 }
             }
+        }
+        noteToDelete?.let { note ->
+            CustomChoiceDialog(
+                dialogTitle = "${ stringResource(id = R.string.delete) } ${ stringResource(id = R.string.note) }",
+                message = stringResource(id = R.string.delete_this_note_message),
+                confirmText = stringResource(id = R.string.delete),
+                dismissText = stringResource(id = R.string.cancel),
+                onConfirmClick = {
+                    coroutineScope.launch {
+                        notesViewModel.markDeletedInRoom(note)
+                    }
+                    noteToDelete = null
+                },
+                onDismissClick = { noteToDelete = null }
+            )
         }
     }
 }
@@ -357,7 +356,7 @@ fun Details(
         modifier = Modifier
             .clickable {
                 coroutineScope.launch {
-                    navController.navigate(Screens.NotesAddEdit.createRoute(noteId = note.noteId))
+                    navController.navigate(Screens.NoteAddEdit.createRoute(noteId = note.noteId))
                 }
             }
             .padding(10.dp)

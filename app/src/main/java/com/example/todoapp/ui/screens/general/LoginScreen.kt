@@ -6,10 +6,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -77,6 +79,14 @@ fun LoginScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Image(
+                painter = painterResource(R.drawable.login_logo),
+                contentDescription = null,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .shadow(elevation = 16.dp, shape = MaterialTheme.shapes.extraLarge)
+                )
+            Spacer(modifier = Modifier.size(15.dp))
             TextField(
                 value = email,
                 onValueChange = { email = it },
@@ -89,7 +99,7 @@ fun LoginScreen(
                     .height(60.dp)
                     .fillMaxWidth()
                     .shadow(elevation = 16.dp, shape = MaterialTheme.shapes.large)
-                    .border(width = 0.5.dp, shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.onSurface),
+                    .border(width = 0.5.dp, shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.primary),
                 )
             TextField(
                 value = password,
@@ -102,7 +112,7 @@ fun LoginScreen(
                     .height(60.dp)
                     .fillMaxWidth()
                     .shadow(elevation = 16.dp, shape = MaterialTheme.shapes.large)
-                    .border(width = 0.5.dp, shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.onSurface),
+                    .border(width = 0.5.dp, shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.primary),
                 shape = MaterialTheme.shapes.large,
                 visualTransformation = if (showPassword) {
                     VisualTransformation.None
@@ -114,7 +124,7 @@ fun LoginScreen(
                         IconButton(onClick = { showPassword = false }) {
                             Icon(
                                 imageVector = Icons.Filled.Visibility,
-                                tint = MaterialTheme.colorScheme.background,
+                                tint = MaterialTheme.colorScheme.tertiaryContainer,
                                 contentDescription = "hide_password"
                             )
                         }
@@ -123,7 +133,7 @@ fun LoginScreen(
                             onClick = { showPassword = true }) {
                             Icon(
                                 imageVector = Icons.Filled.VisibilityOff,
-                                tint = MaterialTheme.colorScheme.background,
+                                tint = MaterialTheme.colorScheme.tertiaryContainer,
                                 contentDescription = "show_password"
                             )
                         }

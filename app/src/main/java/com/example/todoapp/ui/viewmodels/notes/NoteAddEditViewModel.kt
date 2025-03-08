@@ -9,7 +9,7 @@ import com.example.todoapp.data.models.room.Note
 import com.example.todoapp.data.repositories.NoteRepository
 import kotlinx.coroutines.launch
 
-class NotesAddEditViewModel(
+class NoteAddEditViewModel(
     private val noteRepository: NoteRepository,
     private val noteId: String = ""
 ): ViewModel() {
@@ -23,7 +23,7 @@ class NotesAddEditViewModel(
                 note = Note()
             } else {
                 noteRepository.getNoteById(noteId).collect { note ->
-                    this@NotesAddEditViewModel.note = note
+                    this@NoteAddEditViewModel.note = note
                 }
             }
         }
